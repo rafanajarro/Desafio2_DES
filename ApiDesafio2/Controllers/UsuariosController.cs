@@ -57,6 +57,7 @@ namespace ApiDesafio2.Controllers
                 return Ok(new
                 {
                     message = "El usuario ha sido creado con exito.",
+                    username = codigoUsername
                 });
             }
             else
@@ -65,7 +66,7 @@ namespace ApiDesafio2.Controllers
                 {
                     message = "Ya existe un usuario con ese correo electronico.",
                 });
-            }            
+            }
         }
 
         [HttpPost]
@@ -82,11 +83,14 @@ namespace ApiDesafio2.Controllers
                     return Ok(new
                     {
                         Message = "Logueado correctamente.",
-                        NombreUsuario = usuario.NombreUsuario,
-                        CorreoElectronico = usuario.CorreoElectronico,
-                        RolUsuario = usuario.RolUsuario,
-                        Nombre = usuario.Nombre,
-                        Apellidos = usuario.Apellidos
+                        Usuario = new
+                        {
+                            usuario.NombreUsuario,
+                            usuario.CorreoElectronico,
+                            usuario.RolUsuario,
+                            usuario.Nombre,
+                            usuario.Apellidos
+                        }
                     });
                 }
             }

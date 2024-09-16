@@ -4,16 +4,9 @@ namespace WebsiteDesafio2.Models
 {
     public class Usuario
     {
-        [Key]
-        public int UsuarioId { get; set; }
-
         [Required]
         [StringLength(10)]
         public string NombreUsuario { get; set; }
-
-        [Required]
-        [DataType(DataType.Password)]
-        public string Password { get; set; }
 
         [Required]
         [StringLength(100)]
@@ -21,9 +14,8 @@ namespace WebsiteDesafio2.Models
         public string CorreoElectronico { get; set; }
 
         [Required]
-        [StringLength(8)]
-        [Phone]
-        public string Telefono { get; set; }
+        [StringLength(20)]
+        public string RolUsuario { get; set; }
 
         [Required]
         [StringLength(50)]
@@ -32,13 +24,5 @@ namespace WebsiteDesafio2.Models
         [Required]
         [StringLength(50)]
         public string Apellidos { get; set; }
-
-        [Required]
-        [StringLength(20)]
-        public string RolUsuario { get; set; }
-
-        [Required]
-        [DataType(DataType.DateTime)]
-        public DateTime FechaNacimiento { get; set; }
     }
 }

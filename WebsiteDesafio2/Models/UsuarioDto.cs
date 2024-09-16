@@ -4,33 +4,33 @@ namespace WebsiteDesafio2.Models
 {
     public class UsuarioDto
     {
-        [Required]
+        [Required(ErrorMessage = "La contraseña es obligatoria.")]
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "El correo electrónico es obligatorio.")]
         [StringLength(100)]
         [EmailAddress]
         public string CorreoElectronico { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "El número de teléfono es obligatorio.")]
         [StringLength(8)]
         [Phone]
         public string Telefono { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "El nombre es obligatorio.")]
         [StringLength(50)]
         public string Nombre { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Los apellidos son obligatorios.")]
         [StringLength(50)]
         public string Apellidos { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "El rol de usuario es obligatorio.")]
         [StringLength(20)]
         public string RolUsuario { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "La fecha de nacimiento es obligatoria.")]
         [DataType(DataType.DateTime)]
         public DateTime FechaNacimiento { get; set; }
     }
