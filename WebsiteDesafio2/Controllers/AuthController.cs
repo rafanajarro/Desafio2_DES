@@ -54,7 +54,7 @@ namespace WebsiteDesafio2.Controllers
                         HttpContext.Session.SetString("Apellidos", respuesta.usuario.Apellidos);
 
                         // Redirigir al Dashboard
-                        return RedirectToAction("Index", "Dashboard");
+                        return RedirectToAction("Index", "OfertaEmpleos");
                     }
                     else
                     {

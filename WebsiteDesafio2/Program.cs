@@ -1,6 +1,10 @@
+using Microsoft.EntityFrameworkCore;
 using WebsiteDesafio2.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<ProyectoDbContext>(item =>
+item.UseSqlServer(builder.Configuration.GetConnectionString("Database")));
 
 builder.Services.AddTransient<EmailService>();
 

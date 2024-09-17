@@ -1,0 +1,76 @@
+﻿@using WebsiteDesafio2.Models
+@model List<OfertaEmpleoDto>
+
+@{
+    int contador = 1;
+    var rolUsuario = Context.Session.GetString("RolUsuario");
+}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        @if (rolUsuario == "Ofertador")
+        {
+
+            <h2 class="my-4 text-center">Ofertas de Empleo</h2>
+            <div>
+                <a asp-action="Create" class="btn btn-sm btn-secondary">Crear oferta</a>
+            </div>
+
+            <br />
+
+            <br />
+
+            @if (Model != null && Model.Any())
+            {
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Nombre de la Oferta</th>
+                            <th>Descripción</th>
+                            <th>Salario</th>
+                            <th>Contacto</th>
+                            <th>Acciones</th>
+                            <th>Solicitudes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var oferta in Model)
+                        {
+                            <tr>
+                                <td>@contador</td>
+                                <td>@oferta.NombreOferta</td>
+                                <td>@oferta.DescripcionOferta</td>
+                                <td>@oferta.Salario</td>
+                                <td>@oferta.Contacto</td>
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@oferta.OfertaId" class="btn btn-sm btn-primary">Editar</a>
+                                    <a asp-action="Delete" asp-route-id="@oferta.OfertaId" class="btn btn-sm btn-danger">Eliminar</a>
+                                </td>
+
+                                <td>
+                                    <a asp-action="VerSolicitudes" asp-route-id="@oferta.OfertaId"
+                                       class="btn btn-sm btn-info">Ver solicitudes</a>
+                                </td>
+                            </tr>
+                            contador++;
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p>No se encontraron ofertas.</p>
+            }
+
+        }
+        else if (rolUsuario == "Solicitante")
+        {
+            <p>Bienvenido, usuario.</p>
+            <a href="/Usuario/Perfil" class="btn btn-secondary">Ir a tu perfil</a>
+        }
+        else
+        {
+            <p>No tienes los permisos necesarios para ver esta sección.</p>
+        }
+    </div>
+</div>

@@ -1,8 +1,8 @@
 ﻿namespace WebsiteDesafio2.Models
 {
-    public class RespuestaLoginDto
+    public class RespuestaOfertaDto
     {
         public string message { get; set; }
-        public Usuario usuario { get; set; }        
+        public List<OfertaEmpleoDto> ofertas { get; set; }
     }
 }

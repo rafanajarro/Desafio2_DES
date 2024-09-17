@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace ApiDesafio2.Models
+namespace WebsiteDesafio2.Models
 {
     public class ProyectoDbContext : DbContext
     {
@@ -8,7 +8,7 @@ namespace ApiDesafio2.Models
         {
         }
 
-        public DbSet<Usuario> Usuarios { get; set; }
+        //public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<OfertaEmpleo> OfertasEmpleo { get; set; }
     }
 }

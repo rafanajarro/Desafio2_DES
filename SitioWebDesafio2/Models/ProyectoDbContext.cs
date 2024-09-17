@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SitioWebDesafio2.Models;
 
-namespace ApiDesafio2.Models
+namespace SitioWebDesafio2.Models
 {
     public class ProyectoDbContext : DbContext
     {

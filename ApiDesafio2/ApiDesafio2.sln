@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35303.130
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiDesafio2", "ApiDesafio2.csproj", "{5FF7F0F1-EAD9-45F3-BCB3-6F70FE6B7733}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiDesafio2", "ApiDesafio2.csproj", "{5FF7F0F1-EAD9-45F3-BCB3-6F70FE6B7733}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebsiteDesafio2", "..\WebsiteDesafio2\WebsiteDesafio2.csproj", "{E58DAF70-9598-420E-8FCD-F7CCB001178E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebsiteDesafio2", "..\WebsiteDesafio2\WebsiteDesafio2.csproj", "{E58DAF70-9598-420E-8FCD-F7CCB001178E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

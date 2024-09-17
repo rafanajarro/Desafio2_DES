@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Text;
 
-namespace WebsiteDesafio2.Models
+namespace SitioWebDesafio2.Models
 {
     public class ApiService
     {
@@ -42,24 +42,8 @@ namespace WebsiteDesafio2.Models
             }
         }
 
-        public async Task<string> ActualizarDatosApi(string url, object datos)
-        {
-            var contenido = new StringContent(JsonConvert.SerializeObject(datos), Encoding.UTF8, "application/json");
-
-            var respuesta = await _httpClient.PutAsync(url, contenido);
-
-            if (respuesta.IsSuccessStatusCode)
-            {
-                return await respuesta.Content.ReadAsStringAsync();
-            }
-            else
-            {
-                throw new Exception("Error al enviar los datos a la API");
-            }
-        }
-
         public async Task<string> EliminarDatosApi(string url)
-        {
+        {           
             var respuesta = await _httpClient.DeleteAsync(url);
 
             if (respuesta.IsSuccessStatusCode)
@@ -68,7 +52,7 @@ namespace WebsiteDesafio2.Models
             }
             else
             {
-                throw new Exception("Error al enviar los datos a la API");
+                throw new Exception("Error al completar la peticion con la API");
             }
         }
     }
