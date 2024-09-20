@@ -1,4 +1,4 @@
-Url video: [https://youtu.be/CumHPzpOcMM](url)
+Url video: https://youtu.be/CumHPzpOcMM
 
 # Configuración del Proyecto
 
