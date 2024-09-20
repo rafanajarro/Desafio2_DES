@@ -52,10 +52,13 @@ namespace WebsiteDesafio2.Controllers
                     {
                         var respuesta = JsonConvert.DeserializeObject<RespuestaHojaDeVidaDto>(respuestaPost);
 
-                        if (respuesta.message == "Hojas Encontradas.")
+                        if (respuesta.message == "Hoja Encontradas.")
                         {
                             Console.WriteLine("Datos encontrados");
-                            
+
+                            Console.WriteLine(respuesta.hoja.usuario);
+
+
                             return View(respuesta.hoja);
                         }
                         else
@@ -192,6 +195,68 @@ namespace WebsiteDesafio2.Controllers
             if (response != null)
             {
                 return RedirectToAction(nameof(Index));
+            }
+
+            ViewBag.Error = "Error al crear la hoja de vida.";
+            return View(hojaDeVida);
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Editar(int id, [Bind("NombreCompleto,FechaNacimiento,FormacionesAcademicas,ExperienciasProfesionales,ReferenciasPersonales,Idiomas")] HojaDeVida hojaDeVida)
+        {
+            var nombreUsuario = HttpContext.Session.GetString("NombreUsuario");
+
+ 
+
+            var datos = new
+            {
+                nombreCompleto = hojaDeVida.NombreCompleto,
+                usuario = nombreUsuario,
+                fechaNacimiento = hojaDeVida.FechaNacimiento.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
+                formacionesAcademicas = hojaDeVida.FormacionesAcademicas.Select(f => new
+                {
+                    id = f.Id,
+                    institucion = f.Institucion,
+                    tituloObtenido = f.TituloObtenido,
+                    fechaInicio = f.FechaInicio.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
+                    fechaFin = f.FechaFin.ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
+                }),
+                experienciasProfesionales = hojaDeVida.ExperienciasProfesionales.Select(e => new
+                {
+                    empresa = e.Empresa,
+                    cargo = e.Cargo,
+                    fechaInicio = e.FechaInicio.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
+                    fechaFin = e.FechaFin.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
+                    descripcion = "Text"
+                }),
+                referenciasPersonales = hojaDeVida.ReferenciasPersonales.Select(r => new
+                {
+                    nombre = r.Nombre,
+                    telefono = r.Telefono,
+                    relacion = r.Relacion
+                }),
+                idiomas = hojaDeVida.Idiomas.Select(i => new
+                {
+                    nombreIdioma = i.NombreIdioma,
+                    nivel = i.Nivel
+                })
+            };
+
+            var json = (JsonConvert.SerializeObject(datos));
+
+            Console.WriteLine(json);
+
+         // https://localhost:7042/api/HojaDeVida/UpdateHojaDeVida?id=7
+
+            Console.WriteLine(id);
+
+            var response = await _apiService.ActualizarDatosApi(urlApi + "/HojaDeVida/UpdateHojaDeVida?id=" + id, datos);
+
+            if (response != null)
+            {
+                return RedirectToAction(nameof(VerHojasDeVida));
             }
 
             ViewBag.Error = "Error al crear la hoja de vida.";

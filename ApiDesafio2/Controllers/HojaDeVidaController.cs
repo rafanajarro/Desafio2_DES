@@ -73,6 +73,95 @@ namespace ApiDesafio2.Controllers
             }
         }
 
+
+        [HttpPut]
+        [Route("UpdateHojaDeVida")]
+        public IActionResult UpdateHojaDeVida(int id, [FromBody] HojaDeVidaDTO hojaDeVidaDto)
+        {
+            // Validación de datos
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            // Buscar la hoja de vida existente
+            var hojaDeVida = dbContext.HojaDeVida
+                .Include(h => h.FormacionesAcademicas)
+                .Include(h => h.ExperienciasProfesionales)
+                .Include(h => h.ReferenciasPersonales)
+                .Include(h => h.Idiomas)
+                .FirstOrDefault(h => h.Id == id);
+
+            if (hojaDeVida == null)
+            {
+                return NotFound(new { message = "Hoja de vida no encontrada." });
+            }
+
+            // Actualizar los campos de la hoja de vida
+            hojaDeVida.NombreCompleto = hojaDeVidaDto.NombreCompleto;
+            hojaDeVida.FechaNacimiento = hojaDeVidaDto.FechaNacimiento;
+            hojaDeVida.usuario = hojaDeVidaDto.usuario;
+
+            // Limpiar las listas y agregar los nuevos elementos
+            hojaDeVida.FormacionesAcademicas.Clear();
+            foreach (var formacion in hojaDeVidaDto.FormacionesAcademicas)
+            {
+                hojaDeVida.FormacionesAcademicas.Add(new FormacionAcademica
+                {
+                    FechaFin = formacion.FechaFin,
+                    FechaInicio = formacion.FechaInicio,
+                    Institucion = formacion.Institucion,
+                    TituloObtenido = formacion.TituloObtenido
+                });
+            }
+
+            hojaDeVida.ExperienciasProfesionales.Clear();
+            foreach (var empleo in hojaDeVidaDto.ExperienciasProfesionales)
+            {
+                hojaDeVida.ExperienciasProfesionales.Add(new ExperienciaProfesional
+                {
+                    Cargo = empleo.Cargo,
+                    Descripcion = empleo.Descripcion,
+                    Empresa = empleo.Empresa,
+                    FechaFin = empleo.FechaFin,
+                    FechaInicio = empleo.FechaInicio
+                });
+            }
+
+            hojaDeVida.ReferenciasPersonales.Clear();
+            foreach (var referenciaDto in hojaDeVidaDto.ReferenciasPersonales)
+            {
+                hojaDeVida.ReferenciasPersonales.Add(new ReferenciaPersonal
+                {
+                    Nombre = referenciaDto.Nombre,
+                    Telefono = referenciaDto.Telefono,
+                    Relacion = referenciaDto.Relacion
+                });
+            }
+
+            hojaDeVida.Idiomas.Clear();
+            foreach (var idioma in hojaDeVidaDto.Idiomas)
+            {
+                hojaDeVida.Idiomas.Add(new Idioma
+                {
+                    NombreIdioma = idioma.NombreIdioma,
+                    Nivel = idioma.Nivel
+                });
+            }
+
+            try
+            {
+                // Guardar los cambios en la base de datos
+                dbContext.SaveChanges();
+                return Ok(new { message = "La Hoja de Vida ha sido actualizada con éxito." });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return BadRequest(new { message = "No se pudo actualizar la Hoja de Vida." });
+            }
+        }
+
         [HttpGet]
         [Route("GetHojaDeVida")]
         public IActionResult GetHojasDeVida(int id)
@@ -123,7 +212,7 @@ namespace ApiDesafio2.Controllers
                 return Ok(new
                 {
                     message = "Hoja Encontradas.",
-                    hojas = hojas
+                    hoja = hojas
                 });
             }
             else

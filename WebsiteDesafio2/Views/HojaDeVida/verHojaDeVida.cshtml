@@ -9,9 +9,10 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Editar" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
+            <input type="hidden" asp-for="Id" />
             <!-- Nombre Completo -->
             <div class="form-group">
                 <label asp-for="nombreCompleto" class="control-label"></label>
@@ -29,94 +30,117 @@
             <!-- Formación Académica -->
             <h5>Formación Académica</h5>
             <div id="formacion-academica-container">
-                <div class="formacion-academica">
-                    <div class="form-group">
-                        <label for="FormacionesAcademicas_0_TituloObtenido">Título Obtenido</label>
-                        <input name="FormacionesAcademicas[0].TituloObtenido" class="form-control" />
+                @for (int i = 0; i < Model.FormacionesAcademicas.Count; i++)
+                {
+                    <div class="formacion-academica">
+                        <div class="form-group">
+                            <label asp-for="FormacionesAcademicas[i].TituloObtenido" class="control-label"></label>
+                            <input asp-for="FormacionesAcademicas[i].TituloObtenido" class="form-control" />
+                            <span asp-validation-for="FormacionesAcademicas[i].TituloObtenido" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="FormacionesAcademicas[i].Institucion" class="control-label"></label>
+                            <input asp-for="FormacionesAcademicas[i].Institucion" class="form-control" />
+                            <span asp-validation-for="FormacionesAcademicas[i].Institucion" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="FormacionesAcademicas[i].FechaInicio" class="control-label"></label>
+                            <input asp-for="FormacionesAcademicas[i].FechaInicio" type="date" class="form-control" />
+                            <span asp-validation-for="FormacionesAcademicas[i].FechaInicio" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="FormacionesAcademicas[i].FechaFin" class="control-label"></label>
+                            <input asp-for="FormacionesAcademicas[i].FechaFin" type="date" class="form-control" />
+                            <span asp-validation-for="FormacionesAcademicas[i].FechaFin" class="text-danger"></span>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="FormacionesAcademicas_0_Institucion">Institución</label>
-                        <input name="FormacionesAcademicas[0].Institucion" class="form-control" />
-                    </div>
-                    <div class="form-group">
-                        <label for="FormacionesAcademicas_0_FechaInicio">Fecha de Inicio</label>
-                        <input name="FormacionesAcademicas[0].FechaInicio" type="date" class="form-control" />
-                    </div>
-                    <div class="form-group">
-                        <label for="FormacionesAcademicas_0_FechaFin">Fecha de Fin</label>
-                        <input name="FormacionesAcademicas[0].FechaFin" type="date" class="form-control" />
-                    </div>
-                </div>
+                }
             </div>
-            <button type="button" id="addFormacion" class="btn btn-secondary">+ Agregar Formación Académica</button>
+          
 
             <!-- Experiencia Profesional -->
             <h5>Experiencia Profesional</h5>
             <div id="experiencia-profesional-container">
-                <div class="experiencia-profesional">
-                    <div class="form-group">
-                        <label for="ExperienciasProfesionales_0_Empresa">Empresa</label>
-                        <input name="ExperienciasProfesionales[0].Empresa" class="form-control" />
+                @for (int i = 0; i < Model.ExperienciasProfesionales.Count; i++)
+                {
+                    <div class="experiencia-profesional">
+                        <div class="form-group">
+                            <label asp-for="ExperienciasProfesionales[i].Empresa" class="control-label"></label>
+                            <input asp-for="ExperienciasProfesionales[i].Empresa" class="form-control" />
+                            <span asp-validation-for="ExperienciasProfesionales[i].Empresa" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="ExperienciasProfesionales[i].Cargo" class="control-label"></label>
+                            <input asp-for="ExperienciasProfesionales[i].Cargo" class="form-control" />
+                            <span asp-validation-for="ExperienciasProfesionales[i].Cargo" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="ExperienciasProfesionales[i].FechaInicio" class="control-label"></label>
+                            <input asp-for="ExperienciasProfesionales[i].FechaInicio" type="date" class="form-control" />
+                            <span asp-validation-for="ExperienciasProfesionales[i].FechaInicio" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="ExperienciasProfesionales[i].FechaFin" class="control-label"></label>
+                            <input asp-for="ExperienciasProfesionales[i].FechaFin" type="date" class="form-control" />
+                            <span asp-validation-for="ExperienciasProfesionales[i].FechaFin" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="ExperienciasProfesionales[i].descripcion" class="control-label"></label>
+                            <textarea asp-for="ExperienciasProfesionales[i].descripcion" class="form-control"></textarea>
+                            <span asp-validation-for="ExperienciasProfesionales[i].descripcion" class="text-danger"></span>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="ExperienciasProfesionales_0_Cargo">Cargo</label>
-                        <input name="ExperienciasProfesionales[0].Cargo" class="form-control" />
-                    </div>
-                    <div class="form-group">
-                        <label for="ExperienciasProfesionales_0_FechaInicio">Fecha de Inicio</label>
-                        <input name="ExperienciasProfesionales[0].FechaInicio" type="date" class="form-control" />
-                    </div>
-                    <div class="form-group">
-                        <label for="ExperienciasProfesionales_0_FechaFin">Fecha de Fin</label>
-                        <input name="ExperienciasProfesionales[0].FechaFin" type="date" class="form-control" />
-                    </div>
-                    <div class="form-group">
-                        <label for="ExperienciasProfesionales_0_Descripcion">Descripción</label>
-                        <textarea name="ExperienciasProfesionales[0].Descripcion" class="form-control"></textarea>
-                    </div>
-                </div>
+                }
             </div>
-            <button type="button" id="addExperiencia" class="btn btn-secondary">+ Agregar Experiencia Profesional</button>
-
+            
             <!-- Referencias Personales -->
             <h5>Referencias Personales</h5>
             <div id="referencia-personal-container">
-                <div class="referencia-personal">
-                    <div class="form-group">
-                        <label for="ReferenciasPersonales_0_Nombre">Nombre</label>
-                        <input name="ReferenciasPersonales[0].Nombre" class="form-control" />
+                @for (int i = 0; i < Model.ReferenciasPersonales.Count; i++)
+                {
+                    <div class="referencia-personal">
+                        <div class="form-group">
+                            <label asp-for="ReferenciasPersonales[i].Nombre" class="control-label"></label>
+                            <input asp-for="ReferenciasPersonales[i].Nombre" class="form-control" />
+                            <span asp-validation-for="ReferenciasPersonales[i].Nombre" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="ReferenciasPersonales[i].Telefono" class="control-label"></label>
+                            <input asp-for="ReferenciasPersonales[i].Telefono" class="form-control" />
+                            <span asp-validation-for="ReferenciasPersonales[i].Telefono" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="ReferenciasPersonales[i].Relacion" class="control-label"></label>
+                            <input asp-for="ReferenciasPersonales[i].Relacion" class="form-control" />
+                            <span asp-validation-for="ReferenciasPersonales[i].Relacion" class="text-danger"></span>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="ReferenciasPersonales_0_Telefono">Teléfono</label>
-                        <input name="ReferenciasPersonales[0].Telefono" class="form-control" />
-                    </div>
-                    <div class="form-group">
-                        <label for="ReferenciasPersonales_0_Relacion">Relación</label>
-                        <input name="ReferenciasPersonales[0].Relacion" class="form-control" />
-                    </div>
-                </div>
+                }
             </div>
-            <button type="button" id="addReferencia" class="btn btn-secondary">+ Agregar Referencia Personal</button>
-
+            
             <!-- Idiomas -->
             <h5>Idiomas</h5>
             <div id="idioma-container">
-                <div class="idioma">
-                    <div class="form-group">
-                        <label for="Idiomas_0_NombreIdioma">Idioma</label>
-                        <input name="Idiomas[0].NombreIdioma" class="form-control" />
+                @for (int i = 0; i < Model.Idiomas.Count; i++)
+                {
+                    <div class="idioma">
+                        <div class="form-group">
+                            <label asp-for="Idiomas[i].NombreIdioma" class="control-label"></label>
+                            <input asp-for="Idiomas[i].NombreIdioma" class="form-control" />
+                            <span asp-validation-for="Idiomas[i].NombreIdioma" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Idiomas[i].Nivel" class="control-label"></label>
+                            <input asp-for="Idiomas[i].Nivel" class="form-control" />
+                            <span asp-validation-for="Idiomas[i].Nivel" class="text-danger"></span>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="Idiomas_0_Nivel">Nivel</label>
-                        <input name="Idiomas[0].Nivel" class="form-control" />
-                    </div>
-                </div>
+                }
             </div>
-            <button type="button" id="addIdioma" class="btn btn-secondary">+ Agregar Idioma</button>
-
+            
             <!-- Submit -->
             <div class="form-group">
-                <input type="submit" value="Crear" class="btn btn-primary" />
+                <input type="submit" value="Editar" class="btn btn-primary" />
             </div>
         </form>
     </div>
@@ -128,111 +152,6 @@
 
 @section Scripts {
     <script>
-        $(document).ready(function () {
-            var indexFormacion = 1;
-            var indexExperiencia = 1;
-            var indexReferencia = 1;
-            var indexIdioma = 1;
-
-            // Agregar formación académica
-            $('#addFormacion').click(function () {
-                var newFormacion = `
-                <br />
-                            <div class="formacion-academica">
-                                <div class="form-group">
-                                    <label for="FormacionesAcademicas_${indexFormacion}_TituloObtenido">Título Obtenido</label>
-                                    <input name="FormacionesAcademicas[${indexFormacion}].TituloObtenido" class="form-control" />
-                                </div>
-                                <div class="form-group">
-                                    <label for="FormacionesAcademicas_${indexFormacion}_Institucion">Institución</label>
-                                    <input name="FormacionesAcademicas[${indexFormacion}].Institucion" class="form-control" />
-                                </div>
-                                <div class="form-group">
-                                    <label for="FormacionesAcademicas_${indexFormacion}_FechaInicio">Fecha de Inicio</label>
-                                    <input name="FormacionesAcademicas[${indexFormacion}].FechaInicio" type="date" class="form-control" />
-                                </div>
-                                <div class="form-group">
-                                    <label for="FormacionesAcademicas_${indexFormacion}_FechaFin">Fecha de Fin</label>
-                            <input name="FormacionesAcademicas[${indexFormacion}].FechaFin" type="date" class="form-control" />
-                        </div>
-                    </div>
-                        `;
-                $('#formacion-academica-container').append(newFormacion);
-                indexFormacion++;
-                    });
-
-                    // Agregar experiencia profesional
-                    $('#addExperiencia').click(function () {
-                        var newExperiencia = `
-                                 <br />
-                            <div class="experiencia-profesional">
-                                <div class="form-group">
-                                    <label for="ExperienciasProfesionales_${indexExperiencia}_Empresa">Empresa</label>
-                                    <input name="ExperienciasProfesionales[${indexExperiencia}].Empresa" class="form-control" />
-                                </div>
-                                <div class="form-group">
-                                    <label for="ExperienciasProfesionales_${indexExperiencia}_Cargo">Cargo</label>
-                                    <input name="ExperienciasProfesionales[${indexExperiencia}].Cargo" class="form-control" />
-                                </div>
-                                <div class="form-group">
-                                    <label for="ExperienciasProfesionales_${indexExperiencia}_FechaInicio">Fecha de Inicio</label>
-                                    <input name="ExperienciasProfesionales[${indexExperiencia}].FechaInicio" type="date" class="form-control" />
-                                </div>
-                                <div class="form-group">
-                                    <label for="ExperienciasProfesionales_${indexExperiencia}_FechaFin">Fecha de Fin</label>
-                            <input name="ExperienciasProfesionales[${indexExperiencia}].FechaFin" type="date" class="form-control" />
-                        </div>
-                        <div class="form-group">
-                                    <label for="ExperienciasProfesionales_${indexExperiencia}_Descripcion">Descripción</label>
-                            <textarea name="ExperienciasProfesionales[${indexExperiencia}].Descripcion" class="form-control"></textarea>
-                        </div>
-                    </div>
-                        `;
-                        $('#experiencia-profesional-container').append(newExperiencia);
-                        indexExperiencia++;
-                    });
-
-                    // Agregar referencia personal
-                    $('#addReferencia').click(function () {
-                        var newReferencia = `
-                                 <br />
-                            <div class="referencia-personal">
-                                <div class="form-group">
-                                    <label for="ReferenciasPersonales_${indexReferencia}_Nombre">Nombre</label>
-                                    <input name="ReferenciasPersonales[${indexReferencia}].Nombre" class="form-control" />
-                                </div>
-                                <div class="form-group">
-                                    <label for="ReferenciasPersonales_${indexReferencia}_Telefono">Teléfono</label>
-                            <input name="ReferenciasPersonales[${indexReferencia}].Telefono" class="form-control" />
-                        </div>
-                        <div class="form-group">
-                                    <label for="ReferenciasPersonales_${indexReferencia}_Relacion">Relación</label>
-                            <input name="ReferenciasPersonales[${indexReferencia}].Relacion" class="form-control" />
-                        </div>
-                    </div>
-                        `;
-                        $('#referencia-personal-container').append(newReferencia);
-                        indexReferencia++;
-                    });
-
-                    // Agregar idioma
-                    $('#addIdioma').click(function () {
-                        var newIdioma = `
-                         <br />
-                            <div class="idioma">
-                                <div class="form-group">
-                                    <label for="Idiomas_${indexIdioma}_NombreIdioma">Idioma</label>
-                            <input name="Idiomas[${indexIdioma}].NombreIdioma" class="form-control" />
-                        </div>
-                        <div class="form-group">
-                            <label for="Idiomas_${indexIdioma}_Nivel">Nivel</label>
-                                <input name="Idiomas[${indexIdioma}].Nivel" class="form-control" />
-                                </div>
-                            </div>
-                        `;
-                        $('#idioma-container').append(newIdioma);
-                        indexIdioma++;
-                    });
-                });
+        // Tu código JavaScript para agregar nuevas secciones va aquí
     </script>
 }
