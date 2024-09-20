@@ -15,7 +15,6 @@ namespace ApiDesafio2.Controllers
             this.dbContext = dbContext;
         }
 
-
         [HttpGet]
         [Route("GetMisHojasDeVida")]
         public IActionResult GetMisHojasDeVida(string codigoUsuario)
@@ -23,42 +22,42 @@ namespace ApiDesafio2.Controllers
             var usuario = dbContext.HojaDeVida.FirstOrDefault(x => x.usuario == codigoUsuario);
             if (usuario != null)
             {
-          
-                
-           var hojas = dbContext.HojaDeVida
-         .Where(o => o.usuario == codigoUsuario)
-         .Select(o => new
-         {
-             o.Id,
-             o.usuario,
-             o.NombreCompleto,
-             o.FechaNacimiento,
-             FormacionesAcademicas = o.FormacionesAcademicas.Select(f => new
-             {
-                 f.TituloObtenido,
-                 f.Institucion,
-                 f.FechaInicio,
-                 f.FechaFin
-             }).ToList(),
-             ExperienciasProfesionales = o.ExperienciasProfesionales.Select(e => new
-             {
-                 e.Empresa,
-                 e.Cargo,
-                 e.FechaInicio,
-                 e.FechaFin
-             }).ToList(),
-             ReferenciasPersonales = o.ReferenciasPersonales.Select(r => new
-             {
-                 r.Nombre,
-                 r.Telefono,
-                 r.Relacion
-             }).ToList(),
-             Idiomas = o.Idiomas.Select(i => new
-             {
-                 i.NombreIdioma,
-                 i.Nivel
-             }).ToList()
-         }).ToList();
+
+
+                var hojas = dbContext.HojaDeVida
+              .Where(o => o.usuario == codigoUsuario)
+              .Select(o => new
+              {
+                  o.Id,
+                  o.usuario,
+                  o.NombreCompleto,
+                  o.FechaNacimiento,
+                  FormacionesAcademicas = o.FormacionesAcademicas.Select(f => new
+                  {
+                      f.TituloObtenido,
+                      f.Institucion,
+                      f.FechaInicio,
+                      f.FechaFin
+                  }).ToList(),
+                  ExperienciasProfesionales = o.ExperienciasProfesionales.Select(e => new
+                  {
+                      e.Empresa,
+                      e.Cargo,
+                      e.FechaInicio,
+                      e.FechaFin
+                  }).ToList(),
+                  ReferenciasPersonales = o.ReferenciasPersonales.Select(r => new
+                  {
+                      r.Nombre,
+                      r.Telefono,
+                      r.Relacion
+                  }).ToList(),
+                  Idiomas = o.Idiomas.Select(i => new
+                  {
+                      i.NombreIdioma,
+                      i.Nivel
+                  }).ToList()
+              }).ToList();
 
 
                 return Ok(new
@@ -186,7 +185,7 @@ namespace ApiDesafio2.Controllers
         [Route("GetHojaDeVida")]
         public IActionResult GetHojasDeVida(int id)
         {
-  
+
             var registro = dbContext.HojaDeVida.FirstOrDefault(x => x.Id == id);
 
             if (registro != null)
@@ -265,18 +264,19 @@ namespace ApiDesafio2.Controllers
 
             foreach (var formacion in hojaDeVidaDto.FormacionesAcademicas)
             {
-                hojaDeVida.FormacionesAcademicas.Add(new FormacionAcademica { 
+                hojaDeVida.FormacionesAcademicas.Add(new FormacionAcademica
+                {
                     FechaFin = formacion.FechaFin,
-                    FechaInicio = formacion.FechaInicio, 
+                    FechaInicio = formacion.FechaInicio,
                     Institucion = formacion.Institucion,
                     TituloObtenido = formacion.TituloObtenido
-                    
+
                 });
             }
 
-            foreach(var empleo in hojaDeVidaDto.ExperienciasProfesionales)
+            foreach (var empleo in hojaDeVidaDto.ExperienciasProfesionales)
             {
-                hojaDeVida.ExperienciasProfesionales.Add(new ExperienciaProfesional{ Cargo = empleo.Cargo, Descripcion=empleo.Descripcion, Empresa=empleo.Empresa, FechaFin=empleo.FechaFin, FechaInicio=empleo.FechaInicio});
+                hojaDeVida.ExperienciasProfesionales.Add(new ExperienciaProfesional { Cargo = empleo.Cargo, Descripcion = empleo.Descripcion, Empresa = empleo.Empresa, FechaFin = empleo.FechaFin, FechaInicio = empleo.FechaInicio });
             }
 
             foreach (var referenciaDto in hojaDeVidaDto.ReferenciasPersonales)
@@ -319,10 +319,6 @@ namespace ApiDesafio2.Controllers
                     message = "No se pudo crear la oferta de empleo."
                 });
             }
-
-           
-
-
         }
     }
 }

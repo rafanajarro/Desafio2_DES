@@ -19,5 +19,10 @@ namespace WebsiteDesafio2.Models
         [ForeignKey("HojaDeVida")]
         public int HojaDeVidaId { get; set; }
         public HojaDeVida HojaDeVida { get; set; }
+
+        public static implicit operator List<object>(Idioma? v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

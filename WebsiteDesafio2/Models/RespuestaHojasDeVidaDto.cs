@@ -27,7 +27,7 @@
     }
 
     public class ExperienciaProfesionalDto
-        
+
     {
         public string Empresa { get; set; }
         public string Cargo { get; set; }

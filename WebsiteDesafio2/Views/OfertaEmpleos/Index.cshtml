@@ -15,9 +15,15 @@
             <div>
                 <a asp-action="Create" class="btn btn-sm btn-secondary">Crear oferta</a>
             </div>
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    @TempData["Error"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
 
             <br />
-
             <br />
 
             @if (Model != null && Model.Any())
@@ -66,12 +72,23 @@
         }
         else if (rolUsuario == "Solicitante")
         {
-            <h2 class="my-4 text-center">Bienvenido, @nombreUsuario.</h2> <br />
+            <h2 class="my-4 text-center">Bienvenido, @nombreUsuario.</h2>
+            <div>
+                <a asp-action="HojaDeVida" class="btn btn-sm btn-secondary">Hoja de vida</a>
+            </div>
+
+            <br />
             @if (TempData["Message"] != null)
-            {
-                var alertType = TempData["MessageType"] ?? "success"; // Default 'success' if not set
-                <div class="alert alert-@alertType alert-dismissible fade show" role="alert">
+            {             
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
                     @TempData["Message"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+            @if (TempData["Error"] != null)
+            {                
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    @TempData["Error"]
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             }

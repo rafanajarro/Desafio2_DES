@@ -92,14 +92,38 @@ namespace WebsiteDesafio2.Controllers
                 return NotFound();
             }
 
-            var ofertaEmpleo = await _context.OfertasEmpleo
-                .FirstOrDefaultAsync(m => m.OfertaId == id);
-            if (ofertaEmpleo == null)
+            var solicitudOferta = await _context.Solicitudes
+                .FirstOrDefaultAsync(m => m.OfertaEmpleoId == id);
+            if (solicitudOferta == null)
             {
-                return NotFound();
+                TempData["Error"] = "No hay solicitudes para esta oferta.";
+                return RedirectToAction("Index");
             }
 
-            return View(ofertaEmpleo);
+            var dbUsuario = _context.Usuarios.FirstOrDefault(x => x.NombreUsuario == solicitudOferta.UsuarioSolicitanteId);
+            // Si no hay experiencias, formaciones, idiomas o referencias, se devuelve una lista vacía.
+            var dbExperiencias = _context.ExperienciasProfesionales
+                .Where(x => x.HojaDeVidaId == solicitudOferta.HojaDeVidaId).ToList() ?? new List<ExperienciaProfesional>();
+
+            var dbFormaciones = _context.FormacionesAcademicas
+                .Where(x => x.HojaDeVidaId == solicitudOferta.HojaDeVidaId).ToList() ?? new List<FormacionAcademica>();
+
+            var dbIdiomas = _context.Idiomas
+                .Where(x => x.HojaDeVidaId == solicitudOferta.HojaDeVidaId).ToList() ?? new List<Idioma>();
+
+            var dbReferencias = _context.ReferenciasPersonales
+                .Where(x => x.HojaDeVidaId == solicitudOferta.HojaDeVidaId).ToList() ?? new List<ReferenciaPersonal>();
+
+            var datos = new ResponseSolicitudDto
+            {
+                Usuario = dbUsuario,
+                ExperienciaProfesionales = dbExperiencias,
+                FormacionAcademicas = dbFormaciones,
+                Idioma = dbIdiomas,
+                ReferenciaPersonales = dbReferencias
+            };
+
+            return View(datos);
         }
 
         public async Task<IActionResult> Aplicar(int? id)
@@ -109,25 +133,45 @@ namespace WebsiteDesafio2.Controllers
                 return NotFound();
             }
 
+            var dbSolicitud = _context.Solicitudes.FirstOrDefault(x => x.OfertaEmpleoId == id);
             var nombreUsuario = HttpContext.Session.GetString("NombreUsuario");
-            var datos = new
-            {
-                UsuarioSolicitanteId = nombreUsuario,
-                OfertaEmpleoId = id,
-                HojaDeVidaId = 1,
-                FechaPublicacion = DateTime.Now
-            };
+            var dbHoja = _context.HojaDeVida.FirstOrDefault(x => x.usuario == nombreUsuario);
 
-            var response = await _apiService.EnviarDatosALaApi(urlApiSoli + "/CrearSolicitud", datos);
+            bool existeRegistro = _context.Solicitudes
+            .Any(e => e.OfertaEmpleoId == id && e.UsuarioSolicitanteId == nombreUsuario);
+            Console.WriteLine(existeRegistro);
 
-            if (response != null)
+            if (existeRegistro)
             {
-                TempData["Message"] = "Operación realizada con éxito";
+                TempData["Error"] = "Error. Solamente se puede aplicar una vez por cada oferta de empleo.";
                 return RedirectToAction("Index");
             }
+            else
+            {
+                var datos = new
+                {
+                    UsuarioSolicitanteId = nombreUsuario,
+                    OfertaEmpleoId = id,
+                    HojaDeVidaId = dbHoja.Id,
+                    FechaPublicacion = DateTime.Now
+                };
 
-            ViewBag.Error = "Error al crear la solicitud.";
-            return View();
+                var response = await _apiService.EnviarDatosALaApi(urlApiSoli + "/CrearSolicitud", datos);
+
+                if (response != null)
+                {
+                    TempData["Message"] = "Operación realizada con éxito";
+                    return RedirectToAction("Index");
+                }
+
+                TempData["Error"] = "Error al crear la solicitud.";
+                return RedirectToAction("Index");
+            }
+        }
+
+        public IActionResult HojaDeVida()
+        {
+            return RedirectToAction("Index", "HojaDeVida");
         }
 
         // GET: OfertaEmpleos/Create

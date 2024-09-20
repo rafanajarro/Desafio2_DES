@@ -19,19 +19,62 @@ namespace WebsiteDesafio2.Controllers
             _apiService = apiService;
             _context = context;
         }
-        public IActionResult HojaDeVida()
+
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var nombreUsuario = HttpContext.Session.GetString("NombreUsuario");
+            if (!string.IsNullOrEmpty(nombreUsuario))
+            {
+                var respuestaPost = await _apiService.ObtenerDatosDeApi(urlApi + "/HojaDeVida/GetMisHojasDeVida?codigoUsuario=" + nombreUsuario);
+
+                if (!string.IsNullOrEmpty(respuestaPost))
+                {
+                    try
+                    {
+                        var respuesta = JsonConvert.DeserializeObject<RespuestaHojasDeVidaDto>(respuestaPost);
+                        Console.WriteLine(respuesta);
+                        if (respuesta == null)
+                        {
+                            ViewBag.Error = "No se encontraron hojas de vida.";
+                            return View();
+                        }
+
+                        if (respuesta.message == "Hojas Encontradas.")
+                        {
+                            return View("Index", respuesta.hojas);
+                        }
+                        else
+                        {
+                            ViewBag.Error = "No se encontraron Hojas 1.";
+                            return View();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        return View();
+                    }
+                }
+                else
+                {
+                    ViewBag.Error = "No se encontraron Hojas 2.";
+                    return View();
+                }
+            }
+            else
+            {
+                TempData["Error"] = "No se encontraron datos en la sesión.";
+                return RedirectToAction("Index", "Auth");
+            }
         }
 
-        public IActionResult Index()
+        public ActionResult Create()
         {
             return View();
         }
 
 
         // GET: https://localhost:7042/api/HojaDeVida/GetHojaDeVida?id=5
-        public async Task<IActionResult> verHojaDeVida(int id)
+        public async Task<IActionResult> Edit(int id)
         {
             var nombreUsuario = HttpContext.Session.GetString("NombreUsuario");
             if (!string.IsNullOrEmpty(nombreUsuario))
@@ -43,162 +86,35 @@ namespace WebsiteDesafio2.Controllers
                     try
                     {
                         var respuesta = JsonConvert.DeserializeObject<RespuestaHojaDeVidaDto>(respuestaPost);
-                        if (respuesta.message == "Hojas Encontradas.")                        {
-                            Console.WriteLine("Datos encontrados");
-                            return View(respuesta.hoja);
-                        }
-                        else
-                        {
-                            ViewBag.Error = "No se encontraron Hojas 1.";
-                            return View();
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine(ex.ToString());
-                        return View();
-                    }
-                }
-                else
-                {
-                    ViewBag.Error = "No se encontraron Hojas 2.";
-                    return View();
-                }
-            }
-            else
-            {
-                TempData["Error"] = "No se encontraron datos en la sesión.";
-                return RedirectToAction("VerHojasDeVida", "Auth");
-            }
-        }
-
-
-
-        // GET: https://localhost:7042/api/HojaDeVida/GetMisHojasDeVida?codigoUsuario=DD45016460
-        public async Task<IActionResult> VerHojasDeVida()
-        {
-
-            var nombreUsuario = HttpContext.Session.GetString("NombreUsuario");
-
-            if (!string.IsNullOrEmpty(nombreUsuario))
-            {
-
-                var respuestaPost = await _apiService.ObtenerDatosDeApi(urlApi + "/HojaDeVida/GetMisHojasDeVida?codigoUsuario=" + nombreUsuario);
-
-
-                Console.WriteLine(respuestaPost);
-
-
-                if (!string.IsNullOrEmpty(respuestaPost))
-
-                {
-                    try
-                    {
-                        var respuesta = JsonConvert.DeserializeObject<RespuestaHojasDeVidaDto>(respuestaPost);
-
-                        if (respuesta.message == "Hoja Encontradas.")
-                        {
-                            Console.WriteLine("Datos encontrados");
-
-                            Console.WriteLine(respuesta.hoja.usuario);
-
-
-                            return View(respuesta.hoja);
-                        }
-                        else
-                        {
-
-                            ViewBag.Error = "No se encontraron Hojas 1.";
-                            return View();
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-
-                        Console.WriteLine(ex.ToString());
-                        return View();
-                    }
-
-                }
-                else
-                {
-                    ViewBag.Error = "No se encontraron Hojas 2.";
-                    return View();
-                }
-            }
-            else
-            {
-                TempData["Error"] = "No se encontraron datos en la sesión.";
-                return RedirectToAction("VerHojasDeVida", "Auth");
-            }
-        }
-
-
-
-        // GET: https://localhost:7042/api/HojaDeVida/GetMisHojasDeVida?codigoUsuario=DD45016460
-        public async Task<IActionResult> VerHojasDeVida()
-        {
-
-            var nombreUsuario = HttpContext.Session.GetString("NombreUsuario");
-
-
-     
-            if (!string.IsNullOrEmpty(nombreUsuario))
-            {
-
-                var respuestaPost = await _apiService.ObtenerDatosDeApi(urlApi + "/HojaDeVida/GetMisHojasDeVida?codigoUsuario=" + nombreUsuario);
-
-
-                Console.WriteLine(respuestaPost);
-
-
-                if (!string.IsNullOrEmpty(respuestaPost))
-
-                {
-                    try
-                    {
-                    
-                        var respuesta = JsonConvert.DeserializeObject<RespuestaHojasDeVidaDto>(respuestaPost);
-
-                        Console.WriteLine(respuesta);
-                        if (respuesta == null)
-                        {
-                            ViewBag.Error = "No se encontraron Hojas 1.";
-                            return View();
-                        }
-
                         if (respuesta.message == "Hojas Encontradas.")
                         {
-                            Console.WriteLine("Datos encontrados");
-                            return View("VerHojasDeVida", respuesta.hojas);
+                            Console.WriteLine(respuesta.hoja);
+                            return View(respuesta.hoja);//ENVIA HOJA DE VIDA DTO
                         }
                         else
                         {
-                            
-                            ViewBag.Error = "No se encontraron Hojas 1.";
+                            ViewBag.Error = "No se encontraron hojas de vida.";
                             return View();
                         }
                     }
-                    catch(Exception ex) {
-                    
+                    catch (Exception ex)
+                    {
                         Console.WriteLine(ex.ToString());
                         return View();
                     }
-                    
                 }
                 else
                 {
-                    ViewBag.Error = "No se encontraron Hojas 2.";
+                    ViewBag.Error = "No hay hojas de vida guardadas.";
                     return View();
                 }
             }
             else
             {
                 TempData["Error"] = "No se encontraron datos en la sesión.";
-                return RedirectToAction("VerHojasDeVida", "Auth");
+                return RedirectToAction("Index", "Auth");
             }
-        }
-
+        }      
 
         // POST: OfertaEmpleos/Delete/5
         [HttpPost, ActionName("Delete")]
@@ -206,9 +122,7 @@ namespace WebsiteDesafio2.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var response = await _apiService.EliminarDatosApi(urlApi + "/HojaDeVida/EliminarHoja?id=" + id);
-
-            return RedirectToAction(nameof(verHojaDeVida));
-
+            return RedirectToAction("Index");
         }
 
         [HttpPost]
@@ -216,7 +130,6 @@ namespace WebsiteDesafio2.Controllers
         public async Task<IActionResult> Create([Bind("NombreCompleto,FechaNacimiento,FormacionesAcademicas,ExperienciasProfesionales,ReferenciasPersonales,Idiomas")] HojaDeVida hojaDeVida)
         {
             var nombreUsuario = HttpContext.Session.GetString("NombreUsuario");
-
 
             var datos = new
             {
@@ -252,7 +165,6 @@ namespace WebsiteDesafio2.Controllers
                 })
             };
 
-
             var response = await _apiService.EnviarDatosALaApi(urlApi + "/HojaDeVida", datos);
 
             if (response != null)
@@ -275,7 +187,6 @@ namespace WebsiteDesafio2.Controllers
             {
                 return View(hojaDeVida);
             }
-
 
             var datos = new
             {
@@ -312,18 +223,11 @@ namespace WebsiteDesafio2.Controllers
             };
 
             var json = (JsonConvert.SerializeObject(datos));
-
-            Console.WriteLine(json);
-
-         // https://localhost:7042/api/HojaDeVida/UpdateHojaDeVida?id=7
-
-            Console.WriteLine(id);
-
             var response = await _apiService.ActualizarDatosApi(urlApi + "/HojaDeVida/UpdateHojaDeVida?id=" + id, datos);
 
             if (response != null)
             {
-                return RedirectToAction(nameof(VerHojasDeVida));
+                return RedirectToAction("Index");
             }
 
             ViewBag.Error = "Error al crear la hoja de vida.";

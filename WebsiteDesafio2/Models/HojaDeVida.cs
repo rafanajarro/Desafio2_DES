@@ -12,6 +12,10 @@ namespace WebsiteDesafio2.Models
         public string NombreCompleto { get; set; }
 
         [Required]
+        [StringLength(100)]
+        public string usuario { get; set; }
+
+        [Required]
         public DateTime FechaNacimiento { get; set; }
 
         public ICollection<FormacionAcademica> FormacionesAcademicas { get; set; }

@@ -3,7 +3,10 @@
 namespace WebsiteDesafio2.Models
 {
     public class Usuario
-    {
+    {        
+        [Key]
+        public int UsuarioId { get; set; }
+
         [Required]
         [StringLength(10)]
         public string NombreUsuario { get; set; }

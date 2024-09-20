@@ -1,12 +1,119 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@using WebsiteDesafio2.Models
+@model ResponseSolicitudDto
+
 @{
+
+    int contador = 1;
+    var nombreUsuario = Context.Session.GetString("NombreUsuario");
+    var rolUsuario = Context.Session.GetString("RolUsuario");
 }
+
 <div class="container mt-5">
     <div class="row justify-content-center">
         <h2 class="my-4 text-center">Ver solicitudes recibidas</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Campo</th>
+                    <th>Detalles</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Información del Usuario -->
+                <tr>
+                    <td>Nombre de Usuario</td>
+                    <td>@Model.Usuario.NombreUsuario</td>
+                </tr>
+                <tr>
+                    <td>Nombre Completo</td>
+                    <td>@Model.Usuario.Nombre @Model.Usuario.Apellidos</td>
+                </tr>
 
+                <!-- Experiencias Profesionales -->
+                <tr>
+                    <td colspan="2"><strong>Experiencias Profesionales</strong></td>
+                </tr>
+                @if (Model.ExperienciaProfesionales.Any())
+                {
+                    foreach (var experiencia in Model.ExperienciaProfesionales)
+                    {
+                        <tr>
+                            <td>@experiencia.Cargo en @experiencia.Empresa</td>
+                            <td>Desde: @experiencia.FechaInicio.ToShortDateString() hasta @experiencia.FechaFin.ToShortDateString()</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="2">No se encontraron experiencias profesionales.</td>
+                    </tr>
+                }
+
+                <!-- Formaciones Académicas -->
+                <tr>
+                    <td colspan="2"><strong>Formaciones Académicas</strong></td>
+                </tr>
+                @if (Model.FormacionAcademicas.Any())
+                {
+                    foreach (var formacion in Model.FormacionAcademicas)
+                    {
+                        <tr>
+                            <td>@formacion.TituloObtenido en @formacion.Institucion</td>
+                            <td>Desde: @formacion.FechaInicio.ToShortDateString() hasta @formacion.FechaFin.ToShortDateString()</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="2">No se encontraron formaciones académicas.</td>
+                    </tr>
+                }
+
+                <!-- Idiomas -->
+                <tr>
+                    <td colspan="2"><strong>Idiomas</strong></td>
+                </tr>
+                @if (Model.Idioma.Any())
+                {
+                    foreach (var idioma in Model.Idioma)
+                    {
+                        <tr>
+                            <td>@idioma.NombreIdioma</td>
+                            <td>Nivel: @idioma.Nivel</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="2">No se encontraron idiomas.</td>
+                    </tr>
+                }
+
+                <!-- Referencias Personales -->
+                <tr>
+                    <td colspan="2"><strong>Referencias Personales</strong></td>
+                </tr>
+                @if (Model.ReferenciaPersonales.Any())
+                {
+                    foreach (var referencia in Model.ReferenciaPersonales)
+                    {
+                        <tr>
+                            <td>@referencia.Nombre</td>
+                            <td>Teléfono: @referencia.Telefono - Relación: @referencia.Relacion</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="2">No se encontraron referencias personales.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
 
     </div>
 </div>
