@@ -11,6 +11,21 @@
         <div>
             <a asp-action="Create" class="btn btn-sm btn-secondary">Crear Nueva Hoja de Vida</a>
         </div>
+        <br />
+        @if (TempData["Message"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @TempData["Message"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                @TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
 
         @if (Model == null || !Model.Any())
         {
@@ -20,70 +35,58 @@
         }
         else
         {
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Nombre Completo</th>
-                        <th>Fecha de Nacimiento</th>
-                        <th>Formaciones Académicas</th>
-                        <th>Experiencias Profesionales</th>
-                        <th>Referencias Personales</th>
-                        <th>Idiomas</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var hoja in Model)
+            @foreach (var hoja in Model)
+            {
+                <div class="card mt-4 shadow-sm">
+                    <div class="card-header">
+                        <h3>@hoja.nombreCompleto</h3>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Fecha de Nacimiento:</strong> @hoja.fechaNacimiento.ToShortDateString()</p>
 
-                    {
-                        <tr>
-                            <td>@Html.DisplayFor(modelItem => hoja.nombreCompleto)</td>
-                            <td>@Html.DisplayFor(modelItem => hoja.fechaNacimiento)</td>
-                            <td>
-                                <ul>
-                                    @foreach (var formacion in hoja.FormacionesAcademicas)
-                                    {
-                                        <li>@formacion.TituloObtenido en @formacion.Institucion (Desde: @formacion.FechaInicio.ToShortDateString() - Hasta: @formacion.FechaFin.ToShortDateString())</li>
-                                    }
-                                </ul>
-                            </td>
-                            <td>
-                                <ul>
-                                    @foreach (var experiencia in hoja.ExperienciasProfesionales)
-                                    {
-                                        <li>@experiencia.Cargo en @experiencia.Empresa (Desde: @experiencia.FechaInicio.ToShortDateString() - Hasta: @experiencia.FechaFin.ToShortDateString())</li>
-                                    }
-                                </ul>
-                            </td>
-                            <td>
-                                <ul>
-                                    @foreach (var referencia in hoja.ReferenciasPersonales)
-                                    {
-                                        <li>@referencia.Nombre - @referencia.Telefono (@referencia.Relacion)</li>
-                                    }
-                                </ul>
-                            </td>
-                            <td>
-                                <ul>
-                                    @foreach (var idioma in hoja.Idiomas)
-                                    {
-                                        <li>@idioma.NombreIdioma - Nivel: @idioma.Nivel</li>
-                                    }
-                                </ul>
-                            </td>
-                            <td>
-                                <!-- Botón de Editar -->
-                                <a asp-action="Edit" asp-route-id="@hoja.Id" class="btn btn-primary">Editar</a>
+                        <h5>Formaciones Académicas</h5>
+                        <ul>
+                            @foreach (var formacion in hoja.FormacionesAcademicas)
+                            {
+                                <li>@($"{formacion.TituloObtenido} en {formacion.Institucion} (Desde: {formacion.FechaInicio.ToShortDateString()} - Hasta: {formacion.FechaFin.ToShortDateString()})")</li>
+                            }
+                        </ul>
 
-                                <!-- Botón de Eliminar -->
-                                <form asp-action="Delete" asp-route-id="@hoja.Id" method="post" style="display:inline-block;">
-                                    <button type="submit" class="btn btn-danger" onclick="return confirm('¿Está seguro que desea eliminar esta hoja de vida?');">Eliminar</button>
-                                </form>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+                        <h5>Experiencias Profesionales</h5>
+                        <ul>
+                            @foreach (var experiencia in hoja.ExperienciasProfesionales)
+                            {
+                                <li>@($"{experiencia.Cargo} en {experiencia.Empresa} (Desde: {experiencia.FechaInicio.ToShortDateString()} - Hasta: {experiencia.FechaFin.ToShortDateString()})")</li>
+                            }
+                        </ul>
+
+                        <h5>Referencias Personales</h5>
+                        <ul>
+                            @foreach (var referencia in hoja.ReferenciasPersonales)
+                            {
+                                <li>@($"{referencia.Nombre} - {referencia.Telefono} ({referencia.Relacion})")</li>
+                            }
+                        </ul>
+
+                        <h5>Idiomas</h5>
+                        <ul>
+                            @foreach (var idioma in hoja.Idiomas)
+                            {
+                                <li>@($"{idioma.NombreIdioma} - Nivel: {idioma.Nivel}")</li>
+                            }
+                        </ul>
+                    </div>
+                    <div class="card-footer">
+                        <a asp-action="Edit" asp-route-id="@hoja.Id" class="btn btn-primary">Editar</a>
+                        <form asp-action="Delete" asp-route-id="@hoja.Id" method="post" style="display:inline-block;">
+                            <button type="submit" class="btn btn-danger" onclick="return confirm('¿Está seguro que desea eliminar esta hoja de vida?');">Eliminar</button>
+                        </form>
+                    </div>
+                </div>
+            }
         }
+        <div>
+            <a asp-action="Regresar" class="btn btn-sm btn-secondary mt-5">Regresar</a>
+        </div>
     </div>
 </div>

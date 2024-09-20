@@ -18,6 +18,17 @@ namespace WebsiteDesafio2.Controllers
             _context = context;
         }
 
+        public ActionResult CerrarSesion()
+        {
+            HttpContext.Session.Remove("NombreUsuario");
+            HttpContext.Session.Remove("CorreoElectronico");
+            HttpContext.Session.Remove("RolUsuario");
+            HttpContext.Session.Remove("Nombre");
+            HttpContext.Session.Remove("Apellidos");
+            TempData["Message"] = "Sesión cerrada correctamente.";
+            return RedirectToAction("Index", "Auth");
+        }
+
         // GET: OfertaEmpleos
         public async Task<IActionResult> Index()
         {
@@ -40,13 +51,11 @@ namespace WebsiteDesafio2.Controllers
                         }
                         else
                         {
-                            ViewBag.Error = "No se encontraron ofertas.";
                             return View();
                         }
                     }
                     else
                     {
-                        ViewBag.Error = "No se encontraron ofertas.";
                         return View();
                     }
                 }
@@ -66,13 +75,11 @@ namespace WebsiteDesafio2.Controllers
                         }
                         else
                         {
-                            ViewBag.Error = "No se encontraron ofertas.";
                             return View();
                         }
                     }
                     else
                     {
-                        ViewBag.Error = "No se encontraron ofertas.";
                         return View();
                     }
                 }
@@ -96,7 +103,7 @@ namespace WebsiteDesafio2.Controllers
                 .FirstOrDefaultAsync(m => m.OfertaEmpleoId == id);
             if (solicitudOferta == null)
             {
-                TempData["Error"] = "No hay solicitudes para esta oferta.";
+                TempData["Message"] = "No hay solicitudes para esta oferta.";
                 return RedirectToAction("Index");
             }
 
@@ -148,24 +155,33 @@ namespace WebsiteDesafio2.Controllers
             }
             else
             {
-                var datos = new
+                if (dbHoja == null)
                 {
-                    UsuarioSolicitanteId = nombreUsuario,
-                    OfertaEmpleoId = id,
-                    HojaDeVidaId = dbHoja.Id,
-                    FechaPublicacion = DateTime.Now
-                };
-
-                var response = await _apiService.EnviarDatosALaApi(urlApiSoli + "/CrearSolicitud", datos);
-
-                if (response != null)
+                    TempData["Error"] = "Debe crear una hoja de vida antes de aplicar a una oferta de empleo.";
+                    return RedirectToAction("Index");
+                }
+                else
                 {
-                    TempData["Message"] = "Operación realizada con éxito";
+                    var datos = new
+                    {
+                        UsuarioSolicitanteId = nombreUsuario,
+                        OfertaEmpleoId = id,
+                        HojaDeVidaId = dbHoja.Id,
+                        FechaPublicacion = DateTime.Now
+                    };
+
+                    var response = await _apiService.EnviarDatosALaApi(urlApiSoli + "/CrearSolicitud", datos);
+
+                    if (response != null)
+                    {
+                        TempData["Message"] = "Operación realizada con éxito";
+                        return RedirectToAction("Index");
+                    }
+
+                    TempData["Error"] = "Error al crear la solicitud.";
                     return RedirectToAction("Index");
                 }
 
-                TempData["Error"] = "Error al crear la solicitud.";
-                return RedirectToAction("Index");
             }
         }
 
@@ -202,10 +218,10 @@ namespace WebsiteDesafio2.Controllers
 
             if (response != null)
             {
+                TempData["Message"] = "Oferta de empleo creada con exito.";
                 return RedirectToAction(nameof(Index));
             }
-
-            ViewBag.Error = "Error al crear la oferta.";
+            TempData["Error"] = "Error al crear la oferta.";
             return View(ofertaEmpleo);
         }
 
@@ -255,16 +271,14 @@ namespace WebsiteDesafio2.Controllers
 
                 if (response != null)
                 {
+                    TempData["Message"] = "Oferta de empleo actualizada con exito.";
                     return RedirectToAction(nameof(Index));
                 }
-
-                ViewBag.Error = "Error al actualizar la oferta.";
+                TempData["Error"] = "Error al actualizar la oferta.";
                 return View(ofertaEmpleo);
             }
             catch (Exception ex)
             {
-                ViewBag.Error = ex.Message;
-                Console.WriteLine(ex.ToString());
                 return View(ofertaEmpleo);
             }
         }
@@ -293,13 +307,18 @@ namespace WebsiteDesafio2.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var response = await _apiService.EliminarDatosApi(urlApi + "/EliminarOferta?ofertaId=" + id);
-
+            TempData["Message"] = "Oferta de empleo eliminada correctamente.";
             return RedirectToAction(nameof(Index));
         }
 
         private bool OfertaEmpleoExists(int id)
         {
             return _context.OfertasEmpleo.Any(e => e.OfertaId == id);
+        }
+
+        public ActionResult Regresar()
+        {
+            return RedirectToAction("Index", "OfertaEmpleos");
         }
     }
 }
