@@ -1,0 +1,238 @@
+﻿@model WebsiteDesafio2.Models.HojaDeVida
+
+@{
+    ViewData["Title"] = "View";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h4>HojaDeVida</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <!-- Nombre Completo -->
+            <div class="form-group">
+                <label asp-for="NombreCompleto" class="control-label"></label>
+                <input asp-for="NombreCompleto" class="form-control" />
+                <span asp-validation-for="NombreCompleto" class="text-danger"></span>
+            </div>
+
+            <!-- Fecha de Nacimiento -->
+            <div class="form-group">
+                <label asp-for="FechaNacimiento" class="control-label"></label>
+                <input asp-for="FechaNacimiento" type="date" class="form-control" />
+                <span asp-validation-for="FechaNacimiento" class="text-danger"></span>
+            </div>
+
+            <!-- Formación Académica -->
+            <h5>Formación Académica</h5>
+            <div id="formacion-academica-container">
+                <div class="formacion-academica">
+                    <div class="form-group">
+                        <label for="FormacionesAcademicas_0_TituloObtenido">Título Obtenido</label>
+                        <input name="FormacionesAcademicas[0].TituloObtenido" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="FormacionesAcademicas_0_Institucion">Institución</label>
+                        <input name="FormacionesAcademicas[0].Institucion" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="FormacionesAcademicas_0_FechaInicio">Fecha de Inicio</label>
+                        <input name="FormacionesAcademicas[0].FechaInicio" type="date" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="FormacionesAcademicas_0_FechaFin">Fecha de Fin</label>
+                        <input name="FormacionesAcademicas[0].FechaFin" type="date" class="form-control" />
+                    </div>
+                </div>
+            </div>
+            <button type="button" id="addFormacion" class="btn btn-secondary">+ Agregar Formación Académica</button>
+
+            <!-- Experiencia Profesional -->
+            <h5>Experiencia Profesional</h5>
+            <div id="experiencia-profesional-container">
+                <div class="experiencia-profesional">
+                    <div class="form-group">
+                        <label for="ExperienciasProfesionales_0_Empresa">Empresa</label>
+                        <input name="ExperienciasProfesionales[0].Empresa" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="ExperienciasProfesionales_0_Cargo">Cargo</label>
+                        <input name="ExperienciasProfesionales[0].Cargo" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="ExperienciasProfesionales_0_FechaInicio">Fecha de Inicio</label>
+                        <input name="ExperienciasProfesionales[0].FechaInicio" type="date" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="ExperienciasProfesionales_0_FechaFin">Fecha de Fin</label>
+                        <input name="ExperienciasProfesionales[0].FechaFin" type="date" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="ExperienciasProfesionales_0_Descripcion">Descripción</label>
+                        <textarea name="ExperienciasProfesionales[0].Descripcion" class="form-control"></textarea>
+                    </div>
+                </div>
+            </div>
+            <button type="button" id="addExperiencia" class="btn btn-secondary">+ Agregar Experiencia Profesional</button>
+
+            <!-- Referencias Personales -->
+            <h5>Referencias Personales</h5>
+            <div id="referencia-personal-container">
+                <div class="referencia-personal">
+                    <div class="form-group">
+                        <label for="ReferenciasPersonales_0_Nombre">Nombre</label>
+                        <input name="ReferenciasPersonales[0].Nombre" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="ReferenciasPersonales_0_Telefono">Teléfono</label>
+                        <input name="ReferenciasPersonales[0].Telefono" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="ReferenciasPersonales_0_Relacion">Relación</label>
+                        <input name="ReferenciasPersonales[0].Relacion" class="form-control" />
+                    </div>
+                </div>
+            </div>
+            <button type="button" id="addReferencia" class="btn btn-secondary">+ Agregar Referencia Personal</button>
+
+            <!-- Idiomas -->
+            <h5>Idiomas</h5>
+            <div id="idioma-container">
+                <div class="idioma">
+                    <div class="form-group">
+                        <label for="Idiomas_0_NombreIdioma">Idioma</label>
+                        <input name="Idiomas[0].NombreIdioma" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="Idiomas_0_Nivel">Nivel</label>
+                        <input name="Idiomas[0].Nivel" class="form-control" />
+                    </div>
+                </div>
+            </div>
+            <button type="button" id="addIdioma" class="btn btn-secondary">+ Agregar Idioma</button>
+
+            <!-- Submit -->
+            <div class="form-group">
+                <input type="submit" value="Crear" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="VerHojasDeVida">Back to List</a>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            var indexFormacion = 1;
+            var indexExperiencia = 1;
+            var indexReferencia = 1;
+            var indexIdioma = 1;
+
+            // Agregar formación académica
+            $('#addFormacion').click(function () {
+                var newFormacion = `
+                <br />
+                            <div class="formacion-academica">
+                                <div class="form-group">
+                                    <label for="FormacionesAcademicas_${indexFormacion}_TituloObtenido">Título Obtenido</label>
+                                    <input name="FormacionesAcademicas[${indexFormacion}].TituloObtenido" class="form-control" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="FormacionesAcademicas_${indexFormacion}_Institucion">Institución</label>
+                                    <input name="FormacionesAcademicas[${indexFormacion}].Institucion" class="form-control" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="FormacionesAcademicas_${indexFormacion}_FechaInicio">Fecha de Inicio</label>
+                                    <input name="FormacionesAcademicas[${indexFormacion}].FechaInicio" type="date" class="form-control" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="FormacionesAcademicas_${indexFormacion}_FechaFin">Fecha de Fin</label>
+                            <input name="FormacionesAcademicas[${indexFormacion}].FechaFin" type="date" class="form-control" />
+                        </div>
+                    </div>
+                        `;
+                $('#formacion-academica-container').append(newFormacion);
+                indexFormacion++;
+                    });
+
+                    // Agregar experiencia profesional
+                    $('#addExperiencia').click(function () {
+                        var newExperiencia = `
+                                 <br />
+                            <div class="experiencia-profesional">
+                                <div class="form-group">
+                                    <label for="ExperienciasProfesionales_${indexExperiencia}_Empresa">Empresa</label>
+                                    <input name="ExperienciasProfesionales[${indexExperiencia}].Empresa" class="form-control" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="ExperienciasProfesionales_${indexExperiencia}_Cargo">Cargo</label>
+                                    <input name="ExperienciasProfesionales[${indexExperiencia}].Cargo" class="form-control" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="ExperienciasProfesionales_${indexExperiencia}_FechaInicio">Fecha de Inicio</label>
+                                    <input name="ExperienciasProfesionales[${indexExperiencia}].FechaInicio" type="date" class="form-control" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="ExperienciasProfesionales_${indexExperiencia}_FechaFin">Fecha de Fin</label>
+                            <input name="ExperienciasProfesionales[${indexExperiencia}].FechaFin" type="date" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                                    <label for="ExperienciasProfesionales_${indexExperiencia}_Descripcion">Descripción</label>
+                            <textarea name="ExperienciasProfesionales[${indexExperiencia}].Descripcion" class="form-control"></textarea>
+                        </div>
+                    </div>
+                        `;
+                        $('#experiencia-profesional-container').append(newExperiencia);
+                        indexExperiencia++;
+                    });
+
+                    // Agregar referencia personal
+                    $('#addReferencia').click(function () {
+                        var newReferencia = `
+                                 <br />
+                            <div class="referencia-personal">
+                                <div class="form-group">
+                                    <label for="ReferenciasPersonales_${indexReferencia}_Nombre">Nombre</label>
+                                    <input name="ReferenciasPersonales[${indexReferencia}].Nombre" class="form-control" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="ReferenciasPersonales_${indexReferencia}_Telefono">Teléfono</label>
+                            <input name="ReferenciasPersonales[${indexReferencia}].Telefono" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                                    <label for="ReferenciasPersonales_${indexReferencia}_Relacion">Relación</label>
+                            <input name="ReferenciasPersonales[${indexReferencia}].Relacion" class="form-control" />
+                        </div>
+                    </div>
+                        `;
+                        $('#referencia-personal-container').append(newReferencia);
+                        indexReferencia++;
+                    });
+
+                    // Agregar idioma
+                    $('#addIdioma').click(function () {
+                        var newIdioma = `
+                         <br />
+                            <div class="idioma">
+                                <div class="form-group">
+                                    <label for="Idiomas_${indexIdioma}_NombreIdioma">Idioma</label>
+                            <input name="Idiomas[${indexIdioma}].NombreIdioma" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label for="Idiomas_${indexIdioma}_Nivel">Nivel</label>
+                                <input name="Idiomas[${indexIdioma}].Nivel" class="form-control" />
+                                </div>
+                            </div>
+                        `;
+                        $('#idioma-container').append(newIdioma);
+                        indexIdioma++;
+                    });
+                });
+    </script>
+}

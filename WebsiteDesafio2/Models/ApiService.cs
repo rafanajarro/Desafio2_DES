@@ -30,6 +30,8 @@ namespace WebsiteDesafio2.Models
         {
             var contenido = new StringContent(JsonConvert.SerializeObject(datos), Encoding.UTF8, "application/json");
 
+            Console.WriteLine(contenido);
+
             var respuesta = await _httpClient.PostAsync(url, contenido);
 
             if (respuesta.IsSuccessStatusCode)
