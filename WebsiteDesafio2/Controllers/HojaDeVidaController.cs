@@ -96,6 +96,8 @@ namespace WebsiteDesafio2.Controllers
         {
 
             var nombreUsuario = HttpContext.Session.GetString("NombreUsuario");
+
+
      
             if (!string.IsNullOrEmpty(nombreUsuario))
             {
@@ -111,7 +113,15 @@ namespace WebsiteDesafio2.Controllers
                 {
                     try
                     {
+                    
                         var respuesta = JsonConvert.DeserializeObject<RespuestaHojasDeVidaDto>(respuestaPost);
+
+                        Console.WriteLine(respuesta);
+                        if (respuesta == null)
+                        {
+                            ViewBag.Error = "No se encontraron Hojas 1.";
+                            return View();
+                        }
 
                         if (respuesta.message == "Hojas Encontradas.")
                         {
@@ -146,7 +156,16 @@ namespace WebsiteDesafio2.Controllers
         }
 
 
+        // POST: OfertaEmpleos/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var response = await _apiService.EliminarDatosApi(urlApi + "/HojaDeVida/EliminarHoja?id=" + id);
 
+            return RedirectToAction(nameof(verHojaDeVida));
+
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -208,7 +227,11 @@ namespace WebsiteDesafio2.Controllers
         {
             var nombreUsuario = HttpContext.Session.GetString("NombreUsuario");
 
- 
+            if (!ModelState.IsValid)
+            {
+                return View(hojaDeVida);
+            }
+
 
             var datos = new
             {

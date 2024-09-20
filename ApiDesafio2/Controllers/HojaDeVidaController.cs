@@ -162,6 +162,26 @@ namespace ApiDesafio2.Controllers
             }
         }
 
+        [HttpDelete]
+        [Route("EliminarHoja")]
+        public IActionResult EliminarHoja(int id)
+        {
+            var hoja = dbContext.HojaDeVida.FirstOrDefault(o => o.Id == id);
+
+            if (hoja == null)
+            {
+                return NotFound(new { message = "Hoja no encontrada." });
+            }
+
+            // Eliminar la oferta
+            dbContext.HojaDeVida.Remove(hoja);
+
+            // Guardar cambios en la base de datos
+            dbContext.SaveChanges();
+
+            return Ok(new { message = "Oferta eliminada correctamente." });
+        }
+
         [HttpGet]
         [Route("GetHojaDeVida")]
         public IActionResult GetHojasDeVida(int id)

@@ -67,6 +67,7 @@ namespace WebsiteDesafio2.Models
 
         public async Task<string> EliminarDatosApi(string url)
         {
+            Console.WriteLine(url);
             var respuesta = await _httpClient.DeleteAsync(url);
 
             if (respuesta.IsSuccessStatusCode)
