@@ -46,7 +46,12 @@ namespace WebsiteDesafio2.Models
 
         public async Task<string> ActualizarDatosApi(string url, object datos)
         {
+            Console.WriteLine(url);
+
             var contenido = new StringContent(JsonConvert.SerializeObject(datos), Encoding.UTF8, "application/json");
+
+
+            Console.WriteLine("Contenido"+contenido);
 
             var respuesta = await _httpClient.PutAsync(url, contenido);
 
@@ -62,6 +67,7 @@ namespace WebsiteDesafio2.Models
 
         public async Task<string> EliminarDatosApi(string url)
         {
+            Console.WriteLine(url);
             var respuesta = await _httpClient.DeleteAsync(url);
 
             if (respuesta.IsSuccessStatusCode)

@@ -4,6 +4,7 @@ namespace ApiDesafio2.Models
 {
     public class HojaDeVidaDTO
     {
+        public int Id;
         public string NombreCompleto { get; set; }
 
         public string usuario { get; set; }
