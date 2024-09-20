@@ -10,6 +10,7 @@ namespace ApiDesafio2.Models
 
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<OfertaEmpleo> OfertasEmpleo { get; set; }
+        public DbSet<Solicitud> Solicitudes { get; set; }
 
         public DbSet<HojaDeVida> HojaDeVida { get; set; }
         public DbSet<FormacionAcademica> FormacionesAcademicas { get; set; }

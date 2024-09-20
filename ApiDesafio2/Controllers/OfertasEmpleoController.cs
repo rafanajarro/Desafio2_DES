@@ -93,6 +93,7 @@ namespace ApiDesafio2.Controllers
             var ofertas = dbContext.OfertasEmpleo
                            .Select(o => new
                            {
+                               o.OfertaId,
                                o.NombreOferta,
                                o.DescripcionOferta,
                                o.FechaPublicacion,

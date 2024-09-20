@@ -33,13 +33,57 @@ namespace WebsiteDesafio2.Controllers
         // GET: https://localhost:7042/api/HojaDeVida/GetHojaDeVida?id=5
         public async Task<IActionResult> verHojaDeVida(int id)
         {
+            var nombreUsuario = HttpContext.Session.GetString("NombreUsuario");
+            if (!string.IsNullOrEmpty(nombreUsuario))
+            {
+                var respuestaPost = await _apiService.ObtenerDatosDeApi(urlApi + "/HojaDeVida/GetHojaDeVida?id=" + id);
+                Console.WriteLine(respuestaPost);
+                if (!string.IsNullOrEmpty(respuestaPost))
+                {
+                    try
+                    {
+                        var respuesta = JsonConvert.DeserializeObject<RespuestaHojaDeVidaDto>(respuestaPost);
+                        if (respuesta.message == "Hojas Encontradas.")                        {
+                            Console.WriteLine("Datos encontrados");
+                            return View(respuesta.hoja);
+                        }
+                        else
+                        {
+                            ViewBag.Error = "No se encontraron Hojas 1.";
+                            return View();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.ToString());
+                        return View();
+                    }
+                }
+                else
+                {
+                    ViewBag.Error = "No se encontraron Hojas 2.";
+                    return View();
+                }
+            }
+            else
+            {
+                TempData["Error"] = "No se encontraron datos en la sesión.";
+                return RedirectToAction("VerHojasDeVida", "Auth");
+            }
+        }
+
+
+
+        // GET: https://localhost:7042/api/HojaDeVida/GetMisHojasDeVida?codigoUsuario=DD45016460
+        public async Task<IActionResult> VerHojasDeVida()
+        {
 
             var nombreUsuario = HttpContext.Session.GetString("NombreUsuario");
 
             if (!string.IsNullOrEmpty(nombreUsuario))
             {
 
-                var respuestaPost = await _apiService.ObtenerDatosDeApi(urlApi + "/HojaDeVida/GetHojaDeVida?id="+id);
+                var respuestaPost = await _apiService.ObtenerDatosDeApi(urlApi + "/HojaDeVida/GetMisHojasDeVida?codigoUsuario=" + nombreUsuario);
 
 
                 Console.WriteLine(respuestaPost);
@@ -50,13 +94,12 @@ namespace WebsiteDesafio2.Controllers
                 {
                     try
                     {
-                        var respuesta = JsonConvert.DeserializeObject<RespuestaHojaDeVidaDto>(respuestaPost);
+                        var respuesta = JsonConvert.DeserializeObject<RespuestaHojasDeVidaDto>(respuestaPost);
 
                         if (respuesta.message == "Hojas Encontradas.")
                         {
                             Console.WriteLine("Datos encontrados");
-                            
-                            return View(respuesta.hoja);
+                            return View("VerHojasDeVida", respuesta.hojas);
                         }
                         else
                         {
@@ -88,62 +131,6 @@ namespace WebsiteDesafio2.Controllers
 
 
 
-        // GET: https://localhost:7042/api/HojaDeVida/GetMisHojasDeVida?codigoUsuario=DD45016460
-        public async Task<IActionResult> VerHojasDeVida()
-        {
-
-            var nombreUsuario = HttpContext.Session.GetString("NombreUsuario");
-     
-            if (!string.IsNullOrEmpty(nombreUsuario))
-            {
-
-                var respuestaPost = await _apiService.ObtenerDatosDeApi(urlApi + "/HojaDeVida/GetMisHojasDeVida?codigoUsuario=" + nombreUsuario);
-
-
-                Console.WriteLine(respuestaPost);
-
-
-                if (!string.IsNullOrEmpty(respuestaPost))
-
-                {
-                    try
-                    {
-                        var respuesta = JsonConvert.DeserializeObject<RespuestaHojasDeVidaDto>(respuestaPost);
-
-                        if (respuesta.message == "Hojas Encontradas.")
-                        {
-                            Console.WriteLine("Datos encontrados");
-                            return View("VerHojasDeVida", respuesta.hojas);
-                        }
-                        else
-                        {
-                            
-                            ViewBag.Error = "No se encontraron Hojas 1.";
-                            return View();
-                        }
-                    }
-                    catch(Exception ex) {
-                    
-                        Console.WriteLine(ex.ToString());
-                        return View();
-                    }
-                    
-                }
-                else
-                {
-                    ViewBag.Error = "No se encontraron Hojas 2.";
-                    return View();
-                }
-            }
-            else
-            {
-                TempData["Error"] = "No se encontraron datos en la sesión.";
-                return RedirectToAction("VerHojasDeVida", "Auth");
-            }
-        }
-
-
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -151,26 +138,26 @@ namespace WebsiteDesafio2.Controllers
         {
             var nombreUsuario = HttpContext.Session.GetString("NombreUsuario");
 
-           
+
             var datos = new
             {
                 nombreCompleto = hojaDeVida.NombreCompleto,
-                usuario = nombreUsuario, 
-                fechaNacimiento = hojaDeVida.FechaNacimiento.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"), 
+                usuario = nombreUsuario,
+                fechaNacimiento = hojaDeVida.FechaNacimiento.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
                 formacionesAcademicas = hojaDeVida.FormacionesAcademicas.Select(f => new
                 {
-                    id = f.Id, 
+                    id = f.Id,
                     institucion = f.Institucion,
                     tituloObtenido = f.TituloObtenido,
                     fechaInicio = f.FechaInicio.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
-                    fechaFin = f.FechaFin.ToString("yyyy-MM-ddTHH:mm:ss.fffZ") 
+                    fechaFin = f.FechaFin.ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
                 }),
                 experienciasProfesionales = hojaDeVida.ExperienciasProfesionales.Select(e => new
                 {
                     empresa = e.Empresa,
                     cargo = e.Cargo,
                     fechaInicio = e.FechaInicio.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
-                    fechaFin = e.FechaFin.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"), 
+                    fechaFin = e.FechaFin.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
                     descripcion = e.Descripcion
                 }),
                 referenciasPersonales = hojaDeVida.ReferenciasPersonales.Select(r => new

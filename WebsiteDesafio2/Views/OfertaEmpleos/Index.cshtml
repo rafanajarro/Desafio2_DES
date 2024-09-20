@@ -3,13 +3,14 @@
 
 @{
     int contador = 1;
+    var nombreUsuario = Context.Session.GetString("NombreUsuario");
     var rolUsuario = Context.Session.GetString("RolUsuario");
 }
 <div class="container mt-5">
     <div class="row justify-content-center">
         @if (rolUsuario == "Ofertador")
         {
-
+            <h2 class="my-4 text-center">Bienvenido, @nombreUsuario.</h2>
             <h2 class="my-4 text-center">Ofertas de Empleo</h2>
             <div>
                 <a asp-action="Create" class="btn btn-sm btn-secondary">Crear oferta</a>
@@ -65,8 +66,52 @@
         }
         else if (rolUsuario == "Solicitante")
         {
-            <p>Bienvenido, usuario.</p>
-            <a href="/Usuario/Perfil" class="btn btn-secondary">Ir a tu perfil</a>
+            <h2 class="my-4 text-center">Bienvenido, @nombreUsuario.</h2> <br />
+            @if (TempData["Message"] != null)
+            {
+                var alertType = TempData["MessageType"] ?? "success"; // Default 'success' if not set
+                <div class="alert alert-@alertType alert-dismissible fade show" role="alert">
+                    @TempData["Message"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            @if (Model != null && Model.Any())
+            {
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Nombre de la Oferta</th>
+                            <th>Descripción</th>
+                            <th>Salario</th>
+                            <th>Contacto</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var oferta in Model)
+                        {
+                            <tr>
+                                <td>@oferta.OfertaId</td>
+                                <td>@oferta.NombreOferta</td>
+                                <td>@oferta.DescripcionOferta</td>
+                                <td>@oferta.Salario</td>
+                                <td>@oferta.Contacto</td>
+                                <td>
+                                    <a asp-action="Aplicar" asp-route-id="@oferta.OfertaId"
+                                       class="btn btn-sm btn-info">Aplicar</a>
+                                </td>
+                            </tr>
+                            contador++;
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p>No se encontraron ofertas de empleo disponibles.</p>
+            }
         }
         else
         {

@@ -10,6 +10,7 @@ namespace WebsiteDesafio2.Controllers
         private readonly ProyectoDbContext _context;
         private readonly ApiService _apiService;
         private readonly string urlApi = "https://localhost:7042/api/OfertasEmpleo";
+        private readonly string urlApiSoli = "https://localhost:7042/api/Solicitudes";
 
         public OfertaEmpleosController(ApiService apiService, ProyectoDbContext context)
         {
@@ -21,19 +22,27 @@ namespace WebsiteDesafio2.Controllers
         public async Task<IActionResult> Index()
         {
             var nombreUsuario = HttpContext.Session.GetString("NombreUsuario");
-            if (!string.IsNullOrEmpty(nombreUsuario))
+            var rolUsuario = HttpContext.Session.GetString("RolUsuario");
+            if (!string.IsNullOrEmpty(nombreUsuario) && !string.IsNullOrEmpty(rolUsuario))
             {
-                Console.WriteLine(nombreUsuario);
-                var respuestaPost = await _apiService.ObtenerDatosDeApi(urlApi + "/GetMisOfertas?codigoUsuario=" + nombreUsuario);
-
-                if (!string.IsNullOrEmpty(respuestaPost))
+                if (rolUsuario.Equals("Ofertador"))
                 {
-                    var respuesta = JsonConvert.DeserializeObject<RespuestaOfertaDto>(respuestaPost);
+                    var respuestaPost = await _apiService.ObtenerDatosDeApi(urlApi + "/GetMisOfertas?codigoUsuario=" + nombreUsuario);
 
-                    if (respuesta != null && respuesta.message == "Ofertas encontradas.")
+                    if (!string.IsNullOrEmpty(respuestaPost))
                     {
-                        // Pasamos la lista de ofertas directamente a la vista
-                        return View("Index", respuesta.ofertas);
+                        var respuesta = JsonConvert.DeserializeObject<RespuestaOfertaDto>(respuestaPost);
+
+                        if (respuesta != null && respuesta.message == "Ofertas encontradas.")
+                        {
+                            // Pasamos la lista de ofertas directamente a la vista
+                            return View("Index", respuesta.ofertas);
+                        }
+                        else
+                        {
+                            ViewBag.Error = "No se encontraron ofertas.";
+                            return View();
+                        }
                     }
                     else
                     {
@@ -43,8 +52,29 @@ namespace WebsiteDesafio2.Controllers
                 }
                 else
                 {
-                    ViewBag.Error = "No se encontraron ofertas.";
-                    return View();
+                    // SOLICITANTE
+                    var respuestaPost = await _apiService.ObtenerDatosDeApi(urlApi + "/GetOfertas");
+
+                    if (!string.IsNullOrEmpty(respuestaPost))
+                    {
+                        var respuesta = JsonConvert.DeserializeObject<RespuestaOfertaDto>(respuestaPost);
+
+                        if (respuesta != null && respuesta.message == "Ofertas encontradas.")
+                        {
+                            // Pasamos la lista de ofertas directamente a la vista
+                            return View("Index", respuesta.ofertas);
+                        }
+                        else
+                        {
+                            ViewBag.Error = "No se encontraron ofertas.";
+                            return View();
+                        }
+                    }
+                    else
+                    {
+                        ViewBag.Error = "No se encontraron ofertas.";
+                        return View();
+                    }
                 }
             }
             else
@@ -70,6 +100,34 @@ namespace WebsiteDesafio2.Controllers
             }
 
             return View(ofertaEmpleo);
+        }
+
+        public async Task<IActionResult> Aplicar(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var nombreUsuario = HttpContext.Session.GetString("NombreUsuario");
+            var datos = new
+            {
+                UsuarioSolicitanteId = nombreUsuario,
+                OfertaEmpleoId = id,
+                HojaDeVidaId = 1,
+                FechaPublicacion = DateTime.Now
+            };
+
+            var response = await _apiService.EnviarDatosALaApi(urlApiSoli + "/CrearSolicitud", datos);
+
+            if (response != null)
+            {
+                TempData["Message"] = "Operación realizada con éxito";
+                return RedirectToAction("Index");
+            }
+
+            ViewBag.Error = "Error al crear la solicitud.";
+            return View();
         }
 
         // GET: OfertaEmpleos/Create
@@ -146,7 +204,7 @@ namespace WebsiteDesafio2.Controllers
                 contacto = ofertaEmpleo.Contacto,
                 usuarioId = nombreUsuario
             };
-            
+
             try
             {
                 var response = await _apiService.ActualizarDatosApi(urlApi + "/UpdateOferta?ofertaId=" + id, datos);
@@ -191,7 +249,7 @@ namespace WebsiteDesafio2.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var response = await _apiService.EliminarDatosApi(urlApi + "/EliminarOferta?ofertaId=" + id);
-            
+
             return RedirectToAction(nameof(Index));
         }
 

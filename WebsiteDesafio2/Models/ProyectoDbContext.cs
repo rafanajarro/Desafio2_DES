@@ -10,7 +10,7 @@ namespace WebsiteDesafio2.Models
 
         //public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<OfertaEmpleo> OfertasEmpleo { get; set; }
-
+        //public DbSet<Solicitudes> OfertasEmpleo { get; set; }
         public DbSet<HojaDeVida> HojaDeVida { get; set; }
         public DbSet<FormacionAcademica> FormacionesAcademicas { get; set; }
         public DbSet<ExperienciaProfesional> ExperienciasProfesionales { get; set; }
