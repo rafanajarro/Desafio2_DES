@@ -1,3 +1,5 @@
+Url video: [https://youtu.be/CumHPzpOcMM](url)
+
 # Configuración del Proyecto
 
 ### 1. Crear la base de datos
@@ -7,13 +9,3 @@
 ### 2. Ejecutar el Proyecto
 - Configurar Visual Studio para ejecutar el proyecto en modo **Varios proyectos de inicio**:
   - Esto permitirá que se ejecuten simultáneamente tanto la API como la aplicación web.
-
-### 3. Credenciales de Usuarios
-
-#### Usuario Ofertador
-- **Username**: `FV39600342`
-- **Password**: `123`
-
-#### Usuario Solicitante
-- **Username**: `NC68621815`
-- **Password**: `123`
