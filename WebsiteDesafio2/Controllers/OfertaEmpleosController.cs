@@ -98,15 +98,16 @@ namespace WebsiteDesafio2.Controllers
             {
                 return NotFound();
             }
-
+            
             var solicitudOferta = await _context.Solicitudes
                 .FirstOrDefaultAsync(m => m.OfertaEmpleoId == id);
+
             if (solicitudOferta == null)
             {
                 TempData["Message"] = "No hay solicitudes para esta oferta.";
                 return RedirectToAction("Index");
             }
-
+            
             var dbUsuario = _context.Usuarios.FirstOrDefault(x => x.NombreUsuario == solicitudOferta.UsuarioSolicitanteId);
             // Si no hay experiencias, formaciones, idiomas o referencias, se devuelve una lista vacía.
             var dbExperiencias = _context.ExperienciasProfesionales
@@ -143,6 +144,10 @@ namespace WebsiteDesafio2.Controllers
             var dbSolicitud = _context.Solicitudes.FirstOrDefault(x => x.OfertaEmpleoId == id);
             var nombreUsuario = HttpContext.Session.GetString("NombreUsuario");
             var dbHoja = _context.HojaDeVida.FirstOrDefault(x => x.usuario == nombreUsuario);
+
+            Console.WriteLine("dbSolicitud " + dbSolicitud);
+            Console.WriteLine("nombreUsuario " + nombreUsuario);
+            Console.WriteLine("USUARIO HOJA DE VIDA " + dbHoja);
 
             bool existeRegistro = _context.Solicitudes
             .Any(e => e.OfertaEmpleoId == id && e.UsuarioSolicitanteId == nombreUsuario);

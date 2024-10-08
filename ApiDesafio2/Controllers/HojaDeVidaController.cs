@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ApiDesafio2.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ApiDesafio2.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class HojaDeVidaController : Controller
     {
         private readonly ProyectoDbContext dbContext;

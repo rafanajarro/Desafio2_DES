@@ -1,8 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using System.Collections.Generic;
 
 namespace ApiDesafio2.Models
 {
-    public class ProyectoDbContext : DbContext
+    public class ProyectoDbContext : IdentityDbContext<Usuario>
     {
         public ProyectoDbContext(DbContextOptions<ProyectoDbContext> options) : base(options)
         {

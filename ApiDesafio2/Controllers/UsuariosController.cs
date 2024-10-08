@@ -1,7 +1,11 @@
 ﻿using ApiDesafio2.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace ApiDesafio2.Controllers
 {
@@ -38,15 +42,15 @@ namespace ApiDesafio2.Controllers
             }
 
             //Verificar no exista un usuario con otro correo
-            var dbUserCorreo = dbContext.Usuarios.FirstOrDefault(x => x.CorreoElectronico == usuarioDto.CorreoElectronico);
+            var dbUserCorreo = dbContext.Usuarios.FirstOrDefault(x => x.Email == usuarioDto.CorreoElectronico);
 
             if (dbUserCorreo == null)
             {
                 dbContext.Usuarios.Add(new Usuario
                 {
                     NombreUsuario = codigoUsername,
-                    Password = _passwordHasher.HashPassword(null, usuarioDto.Password),
-                    CorreoElectronico = usuarioDto.CorreoElectronico,
+                    PasswordHash = _passwordHasher.HashPassword(null, usuarioDto.Password),
+                    Email = usuarioDto.CorreoElectronico,
                     Telefono = usuarioDto.Telefono,
                     Nombre = usuarioDto.Nombre,
                     Apellidos = usuarioDto.Apellidos,
@@ -71,22 +75,46 @@ namespace ApiDesafio2.Controllers
 
         [HttpPost]
         [Route("Login")]
-        public IActionResult Login(LoginDto loginDto)
+        public async Task<IActionResult> LoginAsync(LoginDto loginDto)
         {
             var usuario = dbContext.Usuarios.FirstOrDefault(x => x.NombreUsuario == loginDto.NombreUsuario);
             if (usuario != null)
             {
-                var resultado = _passwordHasher.VerifyHashedPassword(usuario, usuario.Password, loginDto.Password);
+                var resultado = _passwordHasher.VerifyHashedPassword(usuario, usuario.PasswordHash, loginDto.Password);
 
                 if (resultado == PasswordVerificationResult.Success)
                 {
+                    // Crear las claims (reivindicaciones) del usuario
+                    var claims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.Name, loginDto.NombreUsuario),
+                        new Claim(ClaimTypes.Email, loginDto.Password),
+                        // Puedes agregar más claims personalizadas según tu modelo
+                    };
+
+                    // Crear el ClaimsIdentity con las claims anteriores
+                    var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                    // Crear un ClaimsPrincipal a partir del ClaimsIdentity
+                    var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+
+                    // Opciones para la cookie
+                    var authProperties = new AuthenticationProperties
+                    {
+                        IsPersistent = true, // Esto mantiene la cookie en futuras sesiones
+                        ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30) // Tiempo de expiración de la cookie
+                    };
+
+                    // Genera la cookie de autenticación
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, authProperties);
+
                     return Ok(new
                     {
                         Message = "Logueado correctamente.",
                         Usuario = new
                         {
                             usuario.NombreUsuario,
-                            usuario.CorreoElectronico,
+                            usuario.Email,
                             usuario.RolUsuario,
                             usuario.Nombre,
                             usuario.Apellidos
@@ -110,7 +138,7 @@ namespace ApiDesafio2.Controllers
                     user = new
                     {
                         usuario.NombreUsuario,
-                        usuario.CorreoElectronico,
+                        usuario.Email,
                         usuario.RolUsuario,
                         usuario.Nombre,
                         usuario.Apellidos

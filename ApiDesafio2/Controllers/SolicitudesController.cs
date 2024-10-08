@@ -1,4 +1,5 @@
 ﻿using ApiDesafio2.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -8,6 +9,7 @@ namespace ApiDesafio2.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class SolicitudesController : ControllerBase
     {
         private readonly ProyectoDbContext dbContext;

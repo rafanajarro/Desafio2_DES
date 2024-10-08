@@ -1,8 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebsiteDesafio2.Models
 {
-    public class ProyectoDbContext : DbContext
+    public class ProyectoDbContext : IdentityDbContext<Usuario>
     {
         public ProyectoDbContext(DbContextOptions<ProyectoDbContext> options) : base(options)
         {

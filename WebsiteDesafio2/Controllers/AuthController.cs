@@ -34,46 +34,40 @@ namespace WebsiteDesafio2.Controllers
                 nombreUsuario = loginDto.NombreUsuario,
                 password = loginDto.Password
             };
+            Console.WriteLine(datosLogin.ToString());
 
-            try
+            // Consumir la API y obtener la respuesta
+            var respuestaLogin = await _apiService.EnviarDatosALaApi(urlApi + "/Login", datosLogin);
+
+            if (!string.IsNullOrEmpty(respuestaLogin))
             {
-                // Consumir la API y obtener la respuesta
-                var respuestaLogin = await _apiService.EnviarDatosALaApi(urlApi + "/Login", datosLogin);
+                var respuesta = JsonConvert.DeserializeObject<RespuestaLoginDto>(respuestaLogin);
 
-                if (!string.IsNullOrEmpty(respuestaLogin))
+                if (respuesta != null && respuesta.message == "Logueado correctamente.")
                 {
-                    var respuesta = JsonConvert.DeserializeObject<RespuestaLoginDto>(respuestaLogin);
+                    // Guardar los datos en la sesión
+                    HttpContext.Session.SetString("NombreUsuario", respuesta.usuario.NombreUsuario);
+                    //HttpContext.Session.SetString("CorreoElectronico", respuesta.usuario.CorreoElectronico);
+                    HttpContext.Session.SetString("RolUsuario", respuesta.usuario.RolUsuario);
+                    HttpContext.Session.SetString("Nombre", respuesta.usuario.Nombre);
+                    HttpContext.Session.SetString("Apellidos", respuesta.usuario.Apellidos);
 
-                    if (respuesta != null && respuesta.message == "Logueado correctamente.")
-                    {
-                        // Guardar los datos en la sesión
-                        HttpContext.Session.SetString("NombreUsuario", respuesta.usuario.NombreUsuario);
-                        HttpContext.Session.SetString("CorreoElectronico", respuesta.usuario.CorreoElectronico);
-                        HttpContext.Session.SetString("RolUsuario", respuesta.usuario.RolUsuario);
-                        HttpContext.Session.SetString("Nombre", respuesta.usuario.Nombre);
-                        HttpContext.Session.SetString("Apellidos", respuesta.usuario.Apellidos);
-
-                        // Redirigir al Dashboard
-                        return RedirectToAction("Index", "OfertaEmpleos");
-                    }
-                    else
-                    {
-                        ViewBag.Error = "Error en el inicio de sesión.";
-                        return View("Login");
-                    }
+                    // Redirigir al Dashboard
+                    return RedirectToAction("Index", "OfertaEmpleos");
                 }
                 else
                 {
-                    ViewBag.Error = "Credenciales incorrectas.";
+                    ViewBag.Error = "Error en el inicio de sesión.";
                     return View("Login");
                 }
             }
-            catch (Exception ex)
+            else
             {
-                // Manejo de errores, por ejemplo si la API no responde
-                ViewBag.Error = "Ocurrió un error al iniciar sesión: " + ex.Message;
+                ViewBag.Error = "Credenciales incorrectas.";
                 return View("Login");
             }
+
+
         }
 
         [HttpPost]
@@ -102,16 +96,17 @@ namespace WebsiteDesafio2.Controllers
                     {
                         Console.WriteLine(respuesta.username);
                         Console.WriteLine(datosRegister.correoElectronico);
-                        bool correoEnviado = await _emailService.EnviarCorreoAsync(datosRegister.correoElectronico,
-                            respuesta.username);
-                        if (correoEnviado)
-                        {
-                            ViewBag.Error = "Usuario creado con éxito. Revisar correo";
-                        }
-                        else
-                        {
-                            ViewBag.Error = "Usuario creado con éxito, pero no se pudo enviar el correo.";
-                        }
+                        /* bool correoEnviado = await _emailService.EnviarCorreoAsync(datosRegister.correoElectronico,
+                             respuesta.username);
+                         if (correoEnviado)
+                         {
+                             ViewBag.Error = "Usuario creado con éxito. Revisar correo";
+                         }
+                         else
+                         {
+                             ViewBag.Error = "Usuario creado con éxito, pero no se pudo enviar el correo.";
+                         }*/
+                        ViewBag.Error = "Usuario creado con éxito. Revisar correo";
                         return View("Login");
                     }
                     else
