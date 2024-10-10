@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiDesafio2", "ApiDesafio2.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebsiteDesafio2", "..\WebsiteDesafio2\WebsiteDesafio2.csproj", "{E58DAF70-9598-420E-8FCD-F7CCB001178E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestApi_Desafio2", "..\TestApi_Desafio2\TestApi_Desafio2.csproj", "{62684F08-1F7C-4063-8744-02C56D95ACEE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestApi_Desafio2", "..\TestApi_Desafio2\TestApi_Desafio2.csproj", "{62684F08-1F7C-4063-8744-02C56D95ACEE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

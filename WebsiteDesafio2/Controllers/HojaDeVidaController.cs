@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿
+using iText.Kernel.Pdf;
+using iText.Layout;
+using iText.Layout.Element;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Reporting.WebForms;
 using Newtonsoft.Json;
-using System.Diagnostics.Contracts;
+using System.Net;
 using WebsiteDesafio2.Models;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace WebsiteDesafio2.Controllers
 {
@@ -18,7 +21,7 @@ namespace WebsiteDesafio2.Controllers
         {
             _apiService = apiService;
             _context = context;
-        }
+        }       
 
         public ActionResult Regresar()
         {

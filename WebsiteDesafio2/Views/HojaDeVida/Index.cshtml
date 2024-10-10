@@ -12,6 +12,14 @@
             <a asp-action="Create" class="btn btn-sm btn-secondary">Crear Nueva Hoja de Vida</a>
         </div>
         <br />
+        <div class="mt-2">
+            @foreach (var hoja in Model)
+            {
+                <a class="btn btn-sm btn-secondary" href="http://localhost/Reports/report/ReporteHojaDeVida?HojaDeVida=@hoja.Id" target="_blank">Ver Reporte</a>
+            }
+        </div>
+
+        <br />
         @if (TempData["Message"] != null)
         {
             <div class="alert alert-success alert-dismissible fade show" role="alert">
