@@ -1,10 +1,10 @@
-Url video: https://youtu.be/CumHPzpOcMM
+Url video: [https://youtu.be/CumHPzpOcMM](https://youtu.be/MDyvAK_9w0c)
 
 # Configuración del Proyecto
 
 ### 1. Crear la base de datos
-- Crear una base de datos llamada **Desafio2_DES**.
-- Ejecutar el script SQL `Desafio2_BDD.sql` para crear la estructura de la bd.
+- Configurar el ConnectionString en el proyecto ApiDesafio2.
+- Ejecutar las migraciones con Update-Database en el proyecto ApiDesafio2.
 
 ### 2. Ejecutar el Proyecto
 - Configurar Visual Studio para ejecutar el proyecto en modo **Varios proyectos de inicio**:
