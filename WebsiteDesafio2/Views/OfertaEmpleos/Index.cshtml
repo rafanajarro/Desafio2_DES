@@ -18,7 +18,7 @@
 
             <div class="mt-2">
 
-           <a class="btn btn-sm btn-secondary" href="http://desktop-4p3afjc/Reports/report/ReporteUsuarios2" target="_blank">Ver reporte Usuarios</a>
+                <a class="btn btn-sm btn-secondary" href="http://localhost/Reports/report/ReporteUsuarios2" target="_blank">Ver reporte Usuarios</a>
             </div>
 
             <div class="mt-2 mx-auto">
@@ -26,14 +26,13 @@
                 <button class="btn btn-sm btn-secondary mt-2" onclick="redirigir()">Ir al reporte</button>
             </div>
 
-
             <script>
                 function redirigir() {
                     // Obtener el valor del input
                     const parametro = document.getElementById("miInput").value;
 
                     // Construir la URL completa
-    const url = "http://desktop-4p3afjc/Reports/report/HojaDeVidaFA?TituloObtenido=" + "%" + parametro +"%";
+                    const url = "http://localhost/Reports/report/HojaDeVidaFA?TituloObtenido=" + "%" + parametro + "%";
 
                     // Redirigir a la URL
                     window.location.href = url;
@@ -111,14 +110,14 @@
 
             <br />
             @if (TempData["Message"] != null)
-            {             
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
                     @TempData["Message"]
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             }
             @if (TempData["Error"] != null)
-            {                
+            {
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
                     @TempData["Error"]
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>

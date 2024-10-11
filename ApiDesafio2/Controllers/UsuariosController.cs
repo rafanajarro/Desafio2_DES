@@ -83,25 +83,19 @@ namespace ApiDesafio2.Controllers
                 var resultado = _passwordHasher.VerifyHashedPassword(usuario, usuario.PasswordHash, loginDto.Password);
 
                 if (resultado == PasswordVerificationResult.Success)
-                {
-                    // Crear las claims (reivindicaciones) del usuario
+                {                    
                     var claims = new List<Claim>
                     {
                         new Claim(ClaimTypes.Name, loginDto.NombreUsuario),
-                        new Claim(ClaimTypes.Email, loginDto.Password),
-                        // Puedes agregar más claims personalizadas según tu modelo
+                        new Claim(ClaimTypes.Email, loginDto.Password),                 
                     };
-
-                    // Crear el ClaimsIdentity con las claims anteriores
-                    var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
-                    // Crear un ClaimsPrincipal a partir del ClaimsIdentity
+                    
+                    var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);                    
                     var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
-
-                    // Opciones para la cookie
+                    
                     var authProperties = new AuthenticationProperties
                     {
-                        IsPersistent = true, // Esto mantiene la cookie en futuras sesiones
+                        IsPersistent = true, 
                         ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30) // Tiempo de expiración de la cookie
                     };
 
