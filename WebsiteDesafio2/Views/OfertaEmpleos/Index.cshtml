@@ -15,6 +15,31 @@
             <div>
                 <a asp-action="Create" class="btn btn-sm btn-secondary">Crear oferta</a>
             </div>
+
+            <div class="mt-2">
+
+           <a class="btn btn-sm btn-secondary" href="http://desktop-4p3afjc/Reports/report/ReporteUsuarios2" target="_blank">Ver reporte Usuarios</a>
+            </div>
+
+            <div class="mt-2 mx-auto">
+                <input class="form-control form-control-lg shadow-sm border-secondary w-75" type="text" id="miInput" placeholder="Ingrese el parámetro">
+                <button class="btn btn-sm btn-secondary mt-2" onclick="redirigir()">Ir al reporte</button>
+            </div>
+
+
+            <script>
+                function redirigir() {
+                    // Obtener el valor del input
+                    const parametro = document.getElementById("miInput").value;
+
+                    // Construir la URL completa
+    const url = "http://desktop-4p3afjc/Reports/report/HojaDeVidaFA?TituloObtenido=" + "%" + parametro +"%";
+
+                    // Redirigir a la URL
+                    window.location.href = url;
+                }
+            </script>
+
             @if (TempData["Message"] != null)
             {
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
